@@ -1,0 +1,308 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model OpeningHour {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  day       DayOfWeek
+  startTime DateTime
+  endTime   DateTime
+  isOpen    Boolean
+  branch    Branch    @relation(fields: [branchId], references: [id])
+  branchId  String    @db.ObjectId
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum OpeningHourStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  email          String      @unique
+  name           String
+  phoneNumber    String?
+  hashedPassword String
+  role           UserRole
+  status         UserStatus
+  restaurant     Restaurant?
+  branchId       String?     @db.ObjectId
+  branch         Branch?     @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Restaurant {
+  id       String           @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  imageUrl String?
+  owner    User             @relation(fields: [ownerId], references: [id])
+  ownerId  String           @unique @db.ObjectId
+  status   RestaurantStatus
+
+  Branch Branch[]
+
+  Menu Menu[]
+}
+
+model Branch {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  description   String
+  address       String
+  imageUrl      String?
+  contactNumber String?
+  latitude      Float
+  longitude     Float
+  status        BranchStatus
+  restaurant    Restaurant   @relation(fields: [restaurantId], references: [id])
+  restaurantId  String       @db.ObjectId
+
+  staff User[]
+
+  OpeningHour OpeningHour[]
+
+  BranchMenu BranchMenu[]
+
+  PickUpSlot PickUpSlot[]
+
+  Review Review[]
+
+  Order Order[]
+
+  FavoriteBranch FavoriteBranch[]
+
+  ChoiceOption ChoiceOption[]
+
+  Coupon Coupon[]
+}
+
+enum BranchStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+model Customer {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  email          String         @unique
+  name           String
+  phoneNumber    String?
+  age            Int
+  hashedPassword String
+  status         CustomerStatus
+
+  orders Order[]
+
+  Review Review[]
+
+  FavoriteBranch FavoriteBranch[]
+}
+
+model Category {
+  id       String       @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  imageUrl String?
+  type     CategoryType
+
+  MenuCategory MenuCategory[]
+}
+
+model ChoiceGroup {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  description  String
+  isRequired   Boolean
+  minSelection Int
+
+  ChoiceOption ChoiceOption[]
+}
+
+model ChoiceOption {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  price         Float
+  choiceGroup   ChoiceGroup @relation(fields: [choiceGroupId], references: [id])
+  choiceGroupId String      @db.ObjectId
+  branch        Branch      @relation(fields: [branchId], references: [id])
+  branchId      String      @db.ObjectId
+}
+
+model OrderItem {
+  id                 String          @id @default(auto()) @map("_id") @db.ObjectId
+  quantity           Int
+  unitPrice          Float
+  specialInstruction String?
+  status             OrderItemStatus
+  order              Order           @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  orderId            String          @db.ObjectId
+  branchMenu         BranchMenu      @relation(fields: [branchMenuId], references: [id], onDelete: Cascade)
+  branchMenuId       String          @db.ObjectId
+}
+
+enum OrderItemStatus {
+  CANCELLED
+  ACTIVE
+}
+
+model Order {
+  id                 String      @id @default(auto()) @map("_id") @db.ObjectId
+  orderCode          String
+  promotionCode      String?
+  promotionDiscount  Float?
+  TotalPrice         Float
+  Total              Float
+  createdAt          DateTime
+  status             OrderStatus
+  specialInstruction String?
+  cancelledReason    String?
+  orderDate          DateTime
+  pickupDate         DateTime?
+  cancelledAt        DateTime?
+  pickUpSlotId       String?     @db.ObjectId
+  pickUpSlot         PickUpSlot? @relation(fields: [pickUpSlotId], references: [id], onDelete: Cascade)
+  customer           Customer    @relation(fields: [customerId], references: [id])
+  customerId         String      @db.ObjectId
+  branch             Branch      @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  branchId           String      @db.ObjectId
+
+  OrderItem OrderItem[]
+
+  Review Review[]
+}
+
+model Coupon {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  code               String
+  discount           Float
+  discountPercentage Float
+  usedCount          Int
+  branchId           String   @db.ObjectId
+  branch             Branch   @relation(fields: [branchId], references: [id])
+  expiryDate         DateTime
+  isActive           Boolean
+}
+
+model FavoriteBranch {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId String   @db.ObjectId
+  branch     Branch   @relation(fields: [branchId], references: [id])
+  branchId   String   @db.ObjectId
+}
+
+model Menu {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  description  String
+  imageUrl     String
+  price        Float
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId String     @db.ObjectId
+
+  MenuCategory MenuCategory[]
+
+  BranchMenu BranchMenu[]
+}
+
+model BranchMenu {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  branch   Branch  @relation(fields: [branchId], references: [id])
+  branchId String  @db.ObjectId
+  menu     Menu    @relation(fields: [menuId], references: [id])
+  menuId   String  @db.ObjectId
+  isActive Boolean
+  price    Float
+
+  OrderItem OrderItem[]
+}
+
+model Review {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId String   @db.ObjectId
+  branch     Branch   @relation(fields: [branchId], references: [id])
+  branchId   String   @db.ObjectId
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    String   @db.ObjectId
+  rating     Int
+  comment    String
+  createdAt  DateTime
+}
+
+model PickUpSlot {
+  id            String           @id @default(auto()) @map("_id") @db.ObjectId
+  slotStartTime DateTime
+  slotEndTime   DateTime
+  date          DateTime
+  orderCount    Int
+  status        PickUpSlotStatus
+  branch        Branch           @relation(fields: [branchId], references: [id])
+  branchId      String           @db.ObjectId
+
+  Order Order[]
+}
+
+enum PickUpSlotStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model MenuCategory {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String   @db.ObjectId
+  menu       Menu     @relation(fields: [menuId], references: [id])
+  menuId     String   @db.ObjectId
+}
+
+// Types
+enum CategoryType {
+  FOOD
+  DRINK
+  CUISINE
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum OrderStatus {
+  PENDING
+  ORDERPLACED
+  PREPARING
+  READY
+  PICKED
+  CANCELLED
+  REJECTED
+}
+
+enum UserRole {
+  MANAGER
+  OWNER
+  ADMIN
+}
+
+enum RestaurantStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}

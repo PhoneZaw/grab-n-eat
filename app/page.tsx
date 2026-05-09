@@ -1,19 +1,16 @@
 import { ArrowRight, UtensilsCrossed, Clock, Bike } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import CategoryCard from "@/components/categoryCard";
-import { getFeaturedCuisines } from "@/services/category/categoryList";
-import { getFeaturedBranchList } from "@/services/branch/branchList";
-import SearchBox from "../components/searchBox";
 import Link from "next/link";
 import CustomerNav from "@/components/customerNav";
 import Footer from "@/components/footer";
-import FeaturedRestaurants from "./featuredRestaurants";
+import { Suspense } from "react";
+import FeaturedSection from "./sections/featured-section";
+import CuisineSection from "./sections/cuisine-section";
+import SearchBox from "@/components/searchBox";
+import { RestaurantSkeleton } from "@/components/restaurantCard";
+import { CategorySkeleton } from "@/components/categoryCard";
 
-export default async function Home() {
-  const restaurants = await getFeaturedBranchList(4);
-
-  const cuisines = await getFeaturedCuisines(6);
-
+export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#EFEFEF] to-white">
       <CustomerNav />
@@ -33,25 +30,15 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Featured Restaurants */}
-        <FeaturedRestaurants restaurants={restaurants} />
+        {/* Featured Restaurants with Suspense */}
+        <Suspense fallback={<FeaturedLoadingSkeleton />}>
+          <FeaturedSection />
+        </Suspense>
 
-        {/* Cuisine Categories */}
-        <section className="mb-16">
-          <h3 className="text-2xl font-semibold mb-6 text-[#004E64]">
-            Explore Cuisines
-          </h3>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-            {cuisines.map((cuisine) => (
-              <Link
-                key={cuisine.id}
-                href={`/ui/restaurant?category=${cuisine.name}`}
-              >
-                <CategoryCard category={cuisine} />
-              </Link>
-            ))}
-          </div>
-        </section>
+        {/* Cuisine Categories with Suspense */}
+        <Suspense fallback={<CuisineLoadingSkeleton />}>
+          <CuisineSection />
+        </Suspense>
 
         {/* How It Works */}
         <section className="mb-16 bg-white rounded-lg shadow-md p-8 border border-[#00A5CF]">
@@ -109,5 +96,35 @@ export default async function Home() {
 
       <Footer />
     </div>
+  );
+}
+
+function FeaturedLoadingSkeleton() {
+  return (
+    <section className="mb-16">
+      <h3 className="text-2xl font-semibold mb-6 text-[#004E64]">
+        Featured Restaurants
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <RestaurantSkeleton key={i} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CuisineLoadingSkeleton() {
+  return (
+    <section className="mb-16">
+      <h3 className="text-2xl font-semibold mb-6 text-[#004E64]">
+        Explore Cuisines
+      </h3>
+      <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+        {[...Array(6)].map((_, i) => (
+          <CategorySkeleton key={i} />
+        ))}
+      </div>
+    </section>
   );
 }

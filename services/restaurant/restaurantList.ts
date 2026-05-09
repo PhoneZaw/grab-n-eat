@@ -10,7 +10,7 @@ export type RestaurantListResponse = {
 };
 
 export async function getRestaurantList(): Promise<RestaurantListResponse[]> {
-  var restaurants = await db.restaurant.findMany({
+  const restaurants = await db.restaurant.findMany({
     include: {
       owner: true,
       Menu: {
@@ -43,7 +43,7 @@ export async function getRestaurantList(): Promise<RestaurantListResponse[]> {
 } 
 
 export async function getRestaurantById(id: string): Promise<RestaurantListResponse | null> {
-  var restaurant = await db.restaurant.findUnique({
+  const restaurant = await db.restaurant.findUnique({
     where: {
       id: id,
     },

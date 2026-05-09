@@ -8,7 +8,7 @@ export type CategoryListResponse = {
 };
 
 export async function getCategoryList(): Promise<CategoryListResponse[]> {
-  var categories = await db.category.findMany({});
+  const categories = await db.category.findMany({});
 
   return categories.map((c) => {
     return {
@@ -23,7 +23,7 @@ export async function getCategoryList(): Promise<CategoryListResponse[]> {
 export async function getFeaturedCuisines(
   count: number
 ): Promise<CategoryListResponse[]> {
-  var categories = await db.category.findMany({});
+  const categories = await db.category.findMany({});
 
   return categories.slice(0, count).map((c) => {
     return {

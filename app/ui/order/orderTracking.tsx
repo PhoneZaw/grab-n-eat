@@ -251,11 +251,11 @@ export default function OrderTracking({
         <CardHeader>
           <CardTitle>Order #{order.orderCode}</CardTitle>
           <CardDescription>
-            <p>Track your order status</p>
-            <p>
+            <div>Track your order status</div>
+            <div>
               Order Placed at -{" "}
               {parseDateToReadableDateTimeString(order.orderDate)}
-            </p>
+            </div>
           </CardDescription>
         </CardHeader>
         <CardContent>

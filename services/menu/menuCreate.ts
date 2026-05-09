@@ -1,52 +1,58 @@
 import db from "@/lib/db";
+import { menuCreateSchema, MenuCreateInput } from "@/lib/validation/menu";
 
-export type MenuCreateRequest = {
-  name: string;
-  description: string;
-  imageUrl: string;
-  price: number;
-  restaurantId: string;
-  categories: string[];
-};
-
-export type MenuCreateResponse = {
-  id: string;
-};
+export type MenuCreateRequest = MenuCreateInput;
 
 export async function createMenu(data: MenuCreateRequest) {
-  var menu = await db.menu.create({
-    data: {
-      name: data.name,
-      description: data.description,
-      imageUrl: data.imageUrl,
-      price: +data.price,
-      restaurantId: data.restaurantId,
-    },
-  });
+  const validation = menuCreateSchema.safeParse(data);
+  if (!validation.success) {
+    throw new Error(`Validation failed: ${validation.error.message}`);
+  }
 
-  await db.menuCategory.createMany({
-    data: data.categories.map((c) => {
-      return {
-        menuId: menu.id,
-        categoryId: c,
-      };
-    }),
-  });
+  const validatedData = validation.data;
 
-  var branches = await db.branch.findMany({
-    where: {
-      restaurantId: data.restaurantId,
-    },
-  });
+  try {
+    return await db.$transaction(async (tx) => {
+      const menu = await tx.menu.create({
+        data: {
+          name: validatedData.name,
+          description: validatedData.description,
+          imageUrl: validatedData.imageUrl,
+          price: validatedData.price,
+          restaurantId: validatedData.restaurantId,
+        },
+      });
 
-  await db.branchMenu.createMany({
-    data: branches.map((b) => {
-      return {
-        branchId: b.id,
-        menuId: menu.id,
-        price: +data.price,
-        isActive: true,
-      };
-    }),
-  });
+      await tx.menuCategory.createMany({
+        data: validatedData.categories.map((c) => {
+          return {
+            menuId: menu.id,
+            categoryId: c,
+          };
+        }),
+      });
+
+      const branches = await tx.branch.findMany({
+        where: {
+          restaurantId: validatedData.restaurantId,
+        },
+      });
+
+      await tx.branchMenu.createMany({
+        data: branches.map((b) => {
+          return {
+            branchId: b.id,
+            menuId: menu.id,
+            price: validatedData.price,
+            isActive: true,
+          };
+        }),
+      });
+
+      return menu;
+    });
+  } catch (error) {
+    console.error("Failed to create menu:", error);
+    throw error;
+  }
 }

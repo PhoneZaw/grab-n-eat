@@ -11,33 +11,30 @@ export type SlotResponse = {
 export async function getAvailableSlot(
   branchId: string
 ): Promise<SlotResponse[]> {
-  // get open hours of the branch
-  var maxOrderCountPerSlot = 10;
+  const maxOrderCountPerSlot = 10;
 
-  var openHours = await db.openingHour.findMany({
+  const openHours = await db.openingHour.findMany({
     where: {
       branchId: branchId,
     },
   });
 
-  // create three days of slots
-  var today = new Date();
+  const today = new Date();
+  const slots: SlotResponse[] = [];
 
-  // create slots for each day
-  var slots: SlotResponse[] = [];
   for (let i = 0; i < 3; i++) {
-    var date = add(today, {
+    const date = add(today, {
       days: i,
     });
 
-    var day = getDayOfWeek(date);
-    var orderHourForDay = openHours.find((oh) => oh.day == day);
+    const day = getDayOfWeek(date);
+    const orderHourForDay = openHours.find((oh) => oh.day == day);
 
     if (!orderHourForDay) {
       continue;
     }
-    // TODO: Check start time should be greater than current time
-    var slotStartTime = new Date(
+
+    let slotStartTime = new Date(
       date.getFullYear(),
       date.getMonth(),
       date.getDate(),
@@ -45,14 +42,11 @@ export async function getAvailableSlot(
       orderHourForDay.startTime.getMinutes()
     );
 
-    console.log("slotStartTime", slotStartTime);
-
-    var slotEndTime = add(slotStartTime, {
+    let slotEndTime = add(slotStartTime, {
       hours: 1,
     });
 
     while (slotEndTime.getHours() <= orderHourForDay.endTime.getHours()) {
-      // create slots for the day based on the open hours, for eg 9:00 - 10:00, 10:00 - 11:00
       slots.push({
         slotStartTime: slotStartTime,
         slotEndTime: slotEndTime,
@@ -66,8 +60,7 @@ export async function getAvailableSlot(
     }
   }
 
-  // get slot from db
-  var existingSlots = await db.pickUpSlot.findMany({
+  const existingSlots = await db.pickUpSlot.findMany({
     where: {
       branchId: branchId,
       date: {
@@ -79,18 +72,16 @@ export async function getAvailableSlot(
     },
   });
 
-  // check if the slot is available
-  var availableSlots = slots.filter((slot) => {
-    var existingSlot = existingSlots.find(
+  let availableSlots = slots.filter((slot) => {
+    const existingSlot = existingSlots.find(
       (es) =>
-        es.date == slot.date &&
-        es.slotStartTime == slot.slotStartTime &&
-        es.slotEndTime == slot.slotEndTime
+        es.date === slot.date &&
+        es.slotStartTime === slot.slotStartTime &&
+        es.slotEndTime === slot.slotEndTime
     );
     return !existingSlot;
   });
 
-  // return the available slots
   availableSlots = availableSlots.filter((slot) => {
     return slot.slotStartTime.valueOf() > new Date().valueOf();
   });

@@ -50,6 +50,7 @@ export async function getFooterData(): Promise<FooterData[]> {
         { name: "FAQs", url: "/ui/faqs" },
         { name: "Terms & Policy", url: "/ui/terms" },
         { name: "Business with Us", url: "/dashboard" },
+        { name: "Tester Dashboard", url: "/tester" },
       ],
     },
   ];

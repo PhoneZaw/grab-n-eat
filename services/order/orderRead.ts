@@ -2,6 +2,7 @@ import { OrderItemStatus, OrderStatus, PickUpSlot } from "@prisma/client";
 import { BranchMenuDetailResponse } from "../branchMenu/BranchMenuList";
 import db from "@/lib/db";
 import { BranchDetailResponse, BranchListResponse } from "../branch/branchList";
+import { mapOrderItem, mapBranch } from "./orderMapper";
 
 export type OrderCartResponse = {
   id: string;
@@ -50,7 +51,7 @@ export type OrderResponse = {
 export async function getOrdersByBranchId(
   branchId: string
 ): Promise<OrderResponse[]> {
-  var orders = await db.order.findMany({
+  const orders = await db.order.findMany({
     where: {
       branchId: branchId,
     },
@@ -92,44 +93,8 @@ export async function getOrdersByBranchId(
       ...order,
       customerName: order.customer.name,
       orderItemCount: order.OrderItem.length,
-      orderItems: order.OrderItem.map((item) => {
-        return {
-          id: item.id,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          specialInstruction: item.specialInstruction,
-          branchMenu: {
-            id: item.branchMenu.menu.id,
-            name: item.branchMenu.menu.name,
-            description: item.branchMenu.menu.description,
-            imageUrl: item.branchMenu.menu.imageUrl,
-            price: item.branchMenu.price,
-            branchId: item.branchMenu.branchId,
-            menuCategories: item.branchMenu.menu.MenuCategory.map(
-              (mc) => mc.category.name
-            ),
-            isActive: item.branchMenu.isActive,
-          },
-          status: item.status,
-        };
-      }),
-      branch: {
-        id: order.branch.id,
-        name: order.branch.name,
-        imageUrl: order.branch.restaurant.imageUrl,
-        description: order.branch.description,
-        address: order.branch.address,
-        fullAddress: `${order.branch.address}`,
-        latitude: order.branch.latitude,
-        longitude: order.branch.longitude,
-        contactNumber: order.branch.contactNumber,
-        restaurantId: order.branch.restaurant.id,
-        restaurantName: order.branch.restaurant.name,
-        status: order.branch.status,
-        categories: [],
-        menus: [],
-        openHours: [],
-      },
+      orderItems: order.OrderItem.map(mapOrderItem),
+      branch: mapBranch(order.branch),
     };
   });
 }
@@ -137,7 +102,7 @@ export async function getOrdersByBranchId(
 export async function getCartOrderById(
   orderId: string
 ): Promise<OrderCartResponse | null> {
-  var order = await db.order.findFirst({
+  const order = await db.order.findFirst({
     where: {
       id: orderId,
     },
@@ -147,9 +112,7 @@ export async function getCartOrderById(
     return null;
   }
 
-  console.log("order", order);
-
-  var orderItems = await db.orderItem.findMany({
+  const orderItems = await db.orderItem.findMany({
     where: {
       orderId: orderId,
     },
@@ -170,37 +133,14 @@ export async function getCartOrderById(
     },
   });
 
-  console.log("orderItems", orderItems);
-
   return {
     ...order,
-    orderItems: orderItems.map((item) => {
-      return {
-        id: item.id,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice,
-        specialInstruction: item.specialInstruction,
-        branchMenu: {
-          id: item.branchMenu.menu.id,
-          name: item.branchMenu.menu.name,
-          description: item.branchMenu.menu.description,
-          imageUrl: item.branchMenu.menu.imageUrl,
-          price: item.branchMenu.price,
-          branchId: item.branchMenu.branchId,
-          menuCategories: item.branchMenu.menu.MenuCategory.map(
-            (mc) => mc.category.name
-          ),
-          isActive: item.branchMenu.isActive,
-        },
-        status: item.status,
-      };
-    }),
+    orderItems: orderItems.map(mapOrderItem),
   };
 }
 
 export async function getExistingCart(): Promise<OrderCartResponse | null> {
-  // get last pending order by createdAt
-  var order = await db.order.findFirst({
+  const order = await db.order.findFirst({
     where: {
       status: OrderStatus.PENDING,
     },
@@ -234,27 +174,7 @@ export async function getExistingCart(): Promise<OrderCartResponse | null> {
 
   return {
     ...order,
-    orderItems: order?.OrderItem.map((item) => {
-      return {
-        id: item.id,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice,
-        specialInstruction: item.specialInstruction,
-        branchMenu: {
-          id: item.branchMenu.menu.id,
-          name: item.branchMenu.menu.name,
-          description: item.branchMenu.menu.description,
-          imageUrl: item.branchMenu.menu.imageUrl,
-          price: item.branchMenu.price,
-          branchId: item.branchMenu.branchId,
-          menuCategories: item.branchMenu.menu.MenuCategory.map(
-            (mc) => mc.category.name
-          ),
-          isActive: item.branchMenu.isActive,
-        },
-        status: item.status,
-      };
-    }),
+    orderItems: order?.OrderItem.map(mapOrderItem),
   };
 }
 
@@ -284,7 +204,7 @@ export type OrderDetailResponse = {
 export async function getOrderDetailById(
   orderId: string
 ): Promise<OrderDetailResponse | null> {
-  var order = await db.order.findFirst({
+  const order = await db.order.findFirst({
     where: {
       id: orderId,
     },
@@ -300,11 +220,10 @@ export async function getOrderDetailById(
   });
 
   if (order == null) {
-    console.log("order not found in service");
     return null;
   }
 
-  var orderItems = await db.orderItem.findMany({
+  const orderItems = await db.orderItem.findMany({
     where: {
       orderId: orderId,
     },
@@ -332,54 +251,15 @@ export async function getOrderDetailById(
       email: order.customer.email,
       phone: order.customer.phoneNumber,
     },
-    branch: {
-      id: order.branch.id,
-      name: order.branch.name,
-      imageUrl: order.branch.restaurant.imageUrl,
-      description: order.branch.description,
-      address: order.branch.address,
-      fullAddress: `${order.branch.address}`,
-      latitude: order.branch.latitude,
-      longitude: order.branch.longitude,
-      contactNumber: order.branch.contactNumber,
-      restaurantId: order.branch.restaurant.id,
-      restaurantName: order.branch.restaurant.name,
-      status: order.branch.status,
-      categories: [],
-      menus: [],
-      openHours: [],
-      reviews: [],
-      coupons: [],
-    },
-    orderItems: orderItems.map((item) => {
-      return {
-        id: item.id,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice,
-        specialInstruction: item.specialInstruction,
-        branchMenu: {
-          id: item.branchMenu.menu.id,
-          name: item.branchMenu.menu.name,
-          description: item.branchMenu.menu.description,
-          imageUrl: item.branchMenu.menu.imageUrl,
-          price: item.branchMenu.price,
-          branchId: item.branchMenu.branchId,
-          menuCategories: item.branchMenu.menu.MenuCategory.map(
-            (mc) => mc.category.name
-          ),
-          isActive: item.branchMenu.isActive,
-        },
-        status: item.status,
-      };
-    }),
+    branch: mapBranch(order.branch),
+    orderItems: orderItems.map(mapOrderItem),
   };
 }
 
 export async function getOrderDetailByCode(
   orderCode: string
 ): Promise<OrderDetailResponse | null> {
-  console.log("get order detail by code", orderCode);
-  var order = await db.order.findFirst({
+  const order = await db.order.findFirst({
     where: {
       orderCode: orderCode,
     },
@@ -395,13 +275,10 @@ export async function getOrderDetailByCode(
   });
 
   if (order == null) {
-    console.log("order not found in service");
     return null;
   }
 
-  console.log("order", order);
-
-  var orderItems = await db.orderItem.findMany({
+  const orderItems = await db.orderItem.findMany({
     where: {
       orderId: order.id,
     },
@@ -422,8 +299,6 @@ export async function getOrderDetailByCode(
     },
   });
 
-  console.log("orderItems", orderItems);
-
   return {
     ...order,
     customer: {
@@ -431,53 +306,15 @@ export async function getOrderDetailByCode(
       email: order.customer.email,
       phone: order.customer.phoneNumber,
     },
-    branch: {
-      id: order.branch.id,
-      name: order.branch.name,
-      imageUrl: order.branch.restaurant.imageUrl,
-      description: order.branch.description,
-      address: order.branch.address,
-      fullAddress: `${order.branch.address}`,
-      latitude: order.branch.latitude,
-      longitude: order.branch.longitude,
-      contactNumber: order.branch.contactNumber,
-      restaurantId: order.branch.restaurant.id,
-      restaurantName: order.branch.restaurant.name,
-      status: order.branch.status,
-      categories: [],
-      menus: [],
-      openHours: [],
-      reviews: [],
-      coupons: [],
-    },
-    orderItems: orderItems.map((item) => {
-      return {
-        id: item.id,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice,
-        specialInstruction: item.specialInstruction,
-        branchMenu: {
-          id: item.branchMenu.menu.id,
-          name: item.branchMenu.menu.name,
-          description: item.branchMenu.menu.description,
-          imageUrl: item.branchMenu.menu.imageUrl,
-          price: item.branchMenu.price,
-          branchId: item.branchMenu.branchId,
-          menuCategories: item.branchMenu.menu.MenuCategory.map(
-            (mc) => mc.category.name
-          ),
-          isActive: item.branchMenu.isActive,
-        },
-        status: item.status,
-      };
-    }),
+    branch: mapBranch(order.branch),
+    orderItems: orderItems.map(mapOrderItem),
   };
 }
 
 export async function getOrdersByCustomerId(
   customerId: string
 ): Promise<OrderResponse[]> {
-  var orders = await db.order.findMany({
+  const orders = await db.order.findMany({
     where: {
       customerId: customerId,
       status: {
@@ -517,44 +354,8 @@ export async function getOrdersByCustomerId(
       ...order,
       customerName: order.customer.name,
       orderItemCount: order.OrderItem.length,
-      orderItems: order.OrderItem.map((item) => {
-        return {
-          id: item.id,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          specialInstruction: item.specialInstruction,
-          branchMenu: {
-            id: item.branchMenu.menu.id,
-            name: item.branchMenu.menu.name,
-            description: item.branchMenu.menu.description,
-            imageUrl: item.branchMenu.menu.imageUrl,
-            price: item.branchMenu.price,
-            branchId: item.branchMenu.branchId,
-            menuCategories: item.branchMenu.menu.MenuCategory.map(
-              (mc) => mc.category.name
-            ),
-            isActive: item.branchMenu.isActive,
-          },
-          status: item.status,
-        };
-      }),
-      branch: {
-        id: order.branch.id,
-        name: order.branch.name,
-        imageUrl: order.branch.imageUrl,
-        description: order.branch.description,
-        address: order.branch.address,
-        fullAddress: order.branch.address,
-        latitude: order.branch.latitude,
-        longitude: order.branch.longitude,
-        contactNumber: order.branch.contactNumber,
-        restaurantId: order.branch.restaurant.id,
-        restaurantName: order.branch.restaurant.name,
-        status: order.branch.status,
-        categories: [],
-        menus: [],
-        openHours: [],
-      },
+      orderItems: order.OrderItem.map(mapOrderItem),
+      branch: mapBranch(order.branch),
     };
   });
 }

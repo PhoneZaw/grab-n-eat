@@ -1,12 +1,8 @@
 import db from "@/lib/db";
-import { create } from "domain";
 import { createOwner } from "../staff/staffCreate";
-import { env } from "process";
+import { restaurantCreateSchema, RestaurantCreateInput } from "@/lib/validation/restaurant";
 
-export type RestaurantCreateRequest = {
-  name: string;
-  email: string;
-};
+export type RestaurantCreateRequest = RestaurantCreateInput;
 
 export type RestaurantCreateResponse = {
   id: string;
@@ -15,12 +11,15 @@ export type RestaurantCreateResponse = {
 export async function createRestaurant(
   data: RestaurantCreateRequest
 ): Promise<RestaurantCreateResponse> {
-  console.log(data);
+  const validation = restaurantCreateSchema.safeParse(data);
+  if (!validation.success) {
+    throw new Error(`Validation failed: ${validation.error.message}`);
+  }
 
-  var owner = await createOwner({
+  const owner = await createOwner({
     name: data.name,
     email: data.email,
-    password: env.DEFAULT_PASSWORD ?? "P@ssword1!!",
+    password: process.env.DEFAULT_PASSWORD ?? "P@ssword1!!",
   });
 
   return await db.restaurant.create({

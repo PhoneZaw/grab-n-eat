@@ -34,10 +34,10 @@ const OrderCard = ({
           {isActive ? (
             <span className="text-green-500 font-semibold">{order.status}</span>
           ) : (
-            <div className="flex flex-col justify-end gap-2">
+            <span className="flex flex-col justify-end gap-2">
               <span className="font-semibold">{order.status}</span>
               <span>{order.createdAt.toLocaleDateString()}</span>
-            </div>
+            </span>
           )}
         </CardDescription>
       </CardHeader>

@@ -61,7 +61,7 @@ export type BranchDetailResponse = {
 export async function getBranchListByRestaurantId(
   restaurantId: string
 ): Promise<BranchListResponse[]> {
-  var branches = await db.branch.findMany({
+  const branches = await db.branch.findMany({
     where: {
       restaurantId: restaurantId,
       status: {
@@ -94,7 +94,7 @@ export async function getBranchListByRestaurantId(
       restaurantName: c.restaurant.name,
       status: c.status,
       contactNumber: c.contactNumber,
-      openHours: c.OpeningHour.sort(
+      openHours: [...c.OpeningHour].sort(
         (a, b) => dayOrder[a.day] - dayOrder[b.day]
       ),
     };
@@ -105,7 +105,7 @@ export async function getFeaturedBranchList(
   count?: number | undefined,
   userLocation?: { latitude: number; longitude: number }
 ): Promise<BranchCardResponse[]> {
-  var branches = await db.branch.findMany({
+  const branches = await db.branch.findMany({
     where: {
       status: "ACTIVE",
     },
@@ -129,7 +129,7 @@ export async function getFeaturedBranchList(
   });
 
   return branches.slice(0, count).map((b) => {
-    var rating =
+    let rating =
       b.Review.reduce((acc, r) => acc + r.rating, 0) / b.Review.length;
 
     if (isNaN(rating)) {
@@ -170,7 +170,7 @@ export async function getFeaturedBranchList(
 export async function getBranchDetailByBranchId(
   branchId: string
 ): Promise<BranchDetailResponse | null> {
-  var branch = await db.branch.findFirst({
+  const branch = await db.branch.findFirst({
     where: {
       id: branchId,
       status: "ACTIVE",
@@ -211,9 +211,8 @@ export async function getBranchDetailByBranchId(
     return null;
   }
 
-  var reviews = await getReviewByBranchId(branchId);
-
-  var coupons = await getActiveCoupons(branchId);
+  const reviews = await getReviewByBranchId(branchId);
+  const coupons = await getActiveCoupons(branchId);
 
   return {
     id: branch.id,
@@ -257,7 +256,7 @@ export async function searchBranches(
   search: string,
   userLocation?: { latitude: number; longitude: number }
 ): Promise<BranchCardResponse[]> {
-  var branches = await db.branch.findMany({
+  const branches = await db.branch.findMany({
     where: {
       OR: [
         {
@@ -288,10 +287,8 @@ export async function searchBranches(
     },
   });
 
-  console.log("Branches for ", search, " - ", branches);
-
   return branches.map((b) => {
-    var rating =
+    let rating =
       b.Review.reduce((acc, r) => acc + r.rating, 0) / b.Review.length;
 
     if (isNaN(rating)) {

@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Grab-n-Eat 🍔
 
-## Getting Started
+A modern food ordering and pickup platform built with Next.js 14, Prisma, and MongoDB.
 
-First, run the development server:
+## 🚀 Key Features
 
+- **Multi-tenancy**: Support for multiple restaurants and branches.
+- **Transactional Safety**: Atomic operations for orders, branches, and menus using Prisma Transactions.
+- **Robust Validation**: Schema-based input validation using Zod across all core services.
+- **Selective Hydration**: Optimized loading performance on the home page with React Suspense and custom skeleton loaders.
+- **Real-time Tracking**: Dynamic order status tracking for customers and management tools for staff.
+- **Dual Session Auth**: Secure, separate session management for customers and staff/admins via Iron Session.
+
+## 🛠 Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Database**: MongoDB (ORM: Prisma)
+- **Styling**: Tailwind CSS & Shadcn UI
+- **Auth**: Iron Session
+- **Payments**: Stripe
+- **Validation**: Zod
+- **Icons**: Lucide React
+
+## 🚦 Getting Started
+
+### 1. Prerequisites
+- Node.js 18+ 
+- MongoDB instance (local or Atlas)
+- PNPM (recommended)
+
+### 2. Installation
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Environment Setup
+Copy `.env.example` to `.env` and fill in your credentials:
+```bash
+DATABASE_URL="mongodb+srv://..."
+DEFAULT_PASSWORD="your_default_password"
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Database Sync
+```bash
+npx prisma db push
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### 5. Run Development Server
+```bash
+pnpm run dev
+```
 
-## Learn More
+## 🧪 Testing & QA
 
-To learn more about Next.js, take a look at the following resources:
+For developers and QA testers, we've built a dedicated **Tester Dashboard** available at:
+👉 **[http://localhost:3000/tester](http://localhost:3000/tester)**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This page includes pre-configured dummy accounts for **Admin, Owner, Manager, and Customer** roles, along with quick navigation to all major system flows.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## 📖 Developer Guidelines
 
-## Deploy on Vercel
+For detailed information on project structure, coding standards, and architectural patterns, please refer to:
+📄 **[AGENTS.md](./AGENTS.md)**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+---
+*Built with ❤️ for better food experiences.*

@@ -93,8 +93,8 @@ To facilitate testing the full application flow, a dedicated tester page is avai
 ## Cursor Cloud specific instructions
 
 - Install dependencies with `npm ci`. `package.json` names pnpm in `packageManager`, but the committed lockfile is `package-lock.json` (there is no `pnpm-lock.yaml`).
-- MongoDB 8 Community is installed in the environment image. It is not managed by systemd. The boot script starts `mongod` on `127.0.0.1:27017` with data in `/data/db`, then runs `npx prisma db push`.
-- Local `DATABASE_URL` is `mongodb://127.0.0.1:27017/grabneat`. If `.env` is missing, setup writes a development `.env` (gitignored) with that URL, `DEFAULT_PASSWORD`, and a development `SECRET_COOKIE_PASSWORD`. Mail, UploadThing, and Stripe keys can stay empty for browsing, signup, and login.
+- MongoDB 8 Community is installed in the environment image. It is not managed by systemd. The boot script starts `mongod` as a single-node replica set (`rs0`) on `127.0.0.1:27017` with data in `/data/db`, waits until the node is primary, then runs `npx prisma db push`. Prisma writes fail on a standalone node because they require transactions.
+- Local `DATABASE_URL` is `mongodb://127.0.0.1:27017/grabneat?replicaSet=rs0`. If `.env` is missing, setup writes a development `.env` (gitignored) with that URL, `DEFAULT_PASSWORD`, and a development `SECRET_COOKIE_PASSWORD`. Mail, UploadThing, and Stripe keys can stay empty for browsing, signup, and login.
 - The app dev server listens on port 3000 (`npm run dev -- --hostname 0.0.0.0 --port 3000`).
 - A fresh database has no restaurants or the accounts listed on `/tester`. Customer signup at `/auth/signup` (API `POST /api/auth/register`) creates a real `Customer` row and is the reliable hello-world check.
 - `npm run lint` and `npm run build` currently fail on existing ESLint errors (unescaped apostrophes, missing list keys). `npx tsc --noEmit` reports existing type errors. The development server still runs; do not treat those failures as an environment problem.

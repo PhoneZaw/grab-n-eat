@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="data:," />
+  <title>Grab-n-Eat admin prototypes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,640&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Outfit:wght@380;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body { background: #f3efe7; color: #1c1915; }
+    #stage { min-height: 100vh; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes from-right {
+      from { opacity: 0; transform: translateX(16px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes queue-in {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+    .enter { animation: rise 220ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+    .inspector { animation: from-right 200ms cubic-bezier(0.23, 1, 0.32, 1) both; transform-origin: right center; }
+    @media (prefers-reduced-motion: reduce) {
+      .enter, .inspector, .q-item { animation: none !important; }
+    }
+
+    /* Ledger — dense operations desk */
+    body[data-skin="ledger"] { background: #f3efe7; }
+    .ledger {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 216px 1fr;
+      color: #1c1915;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      background: #f3efe7;
+    }
+    .ledger .rail {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px 14px 88px;
+      border-right: 1px solid #e3dcd0;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .ledger .brand { display: flex; gap: 10px; align-items: center; padding: 0 8px; }
+    .ledger .mark {
+      width: 36px; height: 36px; display: grid; place-items: center;
+      background: #1c1915; color: #f3efe7;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 12px; letter-spacing: -0.04em;
+    }
+    .ledger .brand strong { display: block; font-size: 14px; font-weight: 600; }
+    .ledger .brand small { display: block; color: #6f675e; font-size: 12px; }
+    .ledger .rail-nav { display: flex; flex-direction: column; gap: 2px; }
+    .ledger .rail-nav button {
+      text-align: left; border: 0; background: transparent; color: #4e483f;
+      height: 34px; padding: 0 10px; border-radius: 8px; font-size: 14px;
+    }
+    .ledger .rail-nav button:hover { background: rgba(28, 25, 21, 0.04); }
+    .ledger .rail-nav button:active { transform: scale(0.98); }
+    .ledger .rail-nav button[aria-current="page"] { background: #1c1915; color: #f6f3ec; }
+    .ledger .who { margin-top: auto; padding: 0 8px; font-size: 13px; }
+    .ledger .who span { display: block; color: #6f675e; font-size: 12px; }
+    .ledger .main { padding: 22px 28px 96px; min-width: 0; }
+    .ledger .top {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px;
+    }
+    .ledger .top h1 { font-size: 20px; font-weight: 600; margin: 0; letter-spacing: -0.02em; }
+    .ledger .top p { margin: 2px 0 0; color: #6f675e; font-size: 12px; }
+    .ledger .search { display: flex; align-items: center; gap: 8px; }
+    .ledger .search input {
+      width: 240px; height: 34px; border: 1px solid #d9d1c4; background: #fffdf9;
+      border-radius: 8px; padding: 0 10px; color: inherit;
+    }
+    .ledger .ghost, .market .texty, .floor .chip, .floor .act {
+      transition: background 150ms ease-out, color 150ms ease-out, transform 150ms ease-out;
+    }
+    .ledger .ghost {
+      height: 34px; padding: 0 10px; border: 1px solid #d9d1c4; background: #fffdf9;
+      border-radius: 8px; color: #3a342c;
+    }
+    .ledger .ghost:hover { background: #fff; }
+    .ledger .ghost:active, .market .texty:active, .floor .chip:active, .floor .act:active { transform: scale(0.98); }
+    .ledger .metrics {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid #e3dcd0; border-bottom: 1px solid #e3dcd0;
+    }
+    .ledger .metrics div { padding: 12px 14px 14px; }
+    .ledger .metrics div + div { border-left: 1px solid #e3dcd0; }
+    .ledger .metrics span { display: block; color: #6f675e; font-size: 12px; }
+    .ledger .metrics strong {
+      display: block; margin-top: 6px;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 28px; font-weight: 500; letter-spacing: -0.04em;
+    }
+    .ledger .metrics em { font-style: normal; display: block; margin-top: 4px; color: #6f675e; font-size: 12px; }
+    .ledger .split { display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 28px; margin-top: 22px; }
+    .ledger h2 { margin: 0 0 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #6f675e; }
+    .bar-row, .rank-row { display: grid; grid-template-columns: 132px 1fr 52px; gap: 10px; align-items: center; margin: 7px 0; font-size: 13px; }
+    .track { height: 7px; background: #e6dfd3; border-radius: 99px; overflow: hidden; }
+    .fill { display: block; height: 100%; width: 100%; background: #1c1915; transform-origin: left center; border-radius: 99px; }
+    .num { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; text-align: right; }
+    .ledger .page-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .ledger .page-head h2 { margin: 0; text-transform: none; letter-spacing: -0.02em; font-size: 16px; color: #1c1915; }
+    .ledger .work { display: grid; grid-template-columns: 1fr 300px; gap: 16px; align-items: start; }
+    .ledger .work.solo { grid-template-columns: 1fr; }
+    .ledger table { width: 100%; border-collapse: collapse; font-size: 13.5px; background: transparent; }
+    .ledger th {
+      text-align: left; font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #6f675e; padding: 8px 10px; border-bottom: 1px solid #e3dcd0;
+    }
+    .ledger td { padding: 9px 10px; border-bottom: 1px solid #ebe4d8; vertical-align: middle; }
+    .ledger tr[data-select] { cursor: pointer; }
+    .ledger tr[data-select]:hover td { background: rgba(255, 253, 249, 0.7); }
+    .ledger tr.is-on td { background: #fffdf9; box-shadow: inset 2px 0 0 #1c1915; }
+    .ledger .status { font-size: 12px; }
+    .ledger .status.bad { color: #9a3412; }
+    .ledger .linkish {
+      border: 0; background: transparent; padding: 0; color: #1c1915;
+      text-decoration: underline; text-underline-offset: 3px; font-size: 12px;
+    }
+    .ledger .inspector, .floor .dossier {
+      background: #fffdf9; border: 1px solid #e3dcd0; border-radius: 12px; padding: 14px;
+    }
+    .floor .dossier { background: #171a15; border-color: #2c3128; }
+    .ledger .inspector h3, .floor .dossier h3 { margin: 0 0 4px; font-size: 18px; letter-spacing: -0.02em; }
+    .ledger .inspector p, .floor .dossier p { margin: 0 0 8px; color: #6f675e; font-size: 13px; line-height: 1.45; }
+    .floor .dossier p { color: #b7b3a6; }
+    .ledger .kv { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; font-size: 13px; margin: 12px 0; }
+    .ledger .kv span { color: #6f675e; }
+    .ledger form, .market form, .floor form { display: grid; gap: 8px; margin-bottom: 14px; }
+    .ledger form input, .market form input, .floor form input[data-draft] {
+      height: 34px; border: 1px solid #d9d1c4; border-radius: 8px; padding: 0 10px; background: #fff; color: #1c1915;
+    }
+    .market form button, .floor form button, .empty button {
+      height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid currentColor; background: transparent; color: inherit;
+    }
+    .floor form input[data-draft] { background: #10120f; border-color: #3a3f36; color: #f4f1e6; }
+    .form-error { margin: 0; color: #9a3412; font-size: 13px; }
+    .notice { margin: 0 0 12px; font-size: 13px; color: #6f675e; }
+    .empty { padding: 28px 0; color: #6f675e; }
+    .empty p { margin: 0 0 8px; }
+
+    /* Market — editorial desk */
+    body[data-skin="market"] { background: #f6f1e8; }
+    .market {
+      min-height: 100vh;
+      padding: 28px 48px 108px;
+      background: #f6f1e8;
+      color: #241c16;
+      font-family: Outfit, "Avenir Next", sans-serif;
+    }
+    .market .mast {
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;
+      border-bottom: 1px solid #e2d8c8; padding-bottom: 14px;
+    }
+    .market .brand-name {
+      font-family: Fraunces, "Iowan Old Style", Georgia, serif;
+      font-size: 28px; letter-spacing: -0.03em; line-height: 1; font-weight: 560;
+    }
+    .market .brand-name small {
+      display: block; margin-top: 6px;
+      font-family: Outfit, sans-serif; font-size: 11px; letter-spacing: 0.16em;
+      text-transform: uppercase; color: #7a6e62; font-weight: 500;
+    }
+    .market .mast nav { display: flex; gap: 22px; flex-wrap: wrap; }
+    .market .mast nav button {
+      background: none; border: 0; padding: 0 0 6px; color: #7a6e62; font-size: 15px;
+      border-bottom: 1px solid transparent;
+    }
+    .market .mast nav button[aria-current="page"] { color: #241c16; border-bottom-color: #241c16; }
+    .market .signed { font-size: 13px; color: #7a6e62; text-align: right; }
+    .market .signed strong { display: block; color: #241c16; font-weight: 560; }
+    .market .find { margin-top: 18px; }
+    .market .find input {
+      width: 100%; background: transparent; border: 0; border-bottom: 1px solid #cfc3b0;
+      padding: 10px 0; font-size: 18px; color: inherit; border-radius: 0;
+    }
+    .spread { display: grid; grid-template-columns: 1.35fr 0.75fr; gap: 40px; align-items: end; }
+    .market h1 {
+      font-family: Fraunces, Georgia, serif; font-weight: 560; font-size: 64px;
+      line-height: 0.94; letter-spacing: -0.035em; margin: 28px 0 12px; max-width: 14ch;
+    }
+    .market .deck { margin: 0; max-width: 42ch; font-size: 18px; line-height: 1.45; color: #4a4036; }
+    .market .rank { list-style: none; margin: 0; padding: 0; }
+    .market .rank li {
+      display: grid; grid-template-columns: 28px 1fr auto; gap: 8px;
+      padding: 8px 0; border-top: 1px solid #e2d8c8; font-size: 15px;
+    }
+    .market .kicker { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #7a6e62; }
+    .market .strip { margin-top: 36px; }
+    .market .names { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .market .names button {
+      text-align: left; background: transparent; border: 0; padding: 0; color: inherit;
+    }
+    .market .names strong {
+      display: block; font-family: Fraunces, Georgia, serif; font-size: 28px; font-weight: 560; letter-spacing: -0.03em;
+    }
+    .market .names span { color: #7a6e62; font-size: 13px; }
+    .plates { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .plate {
+      display: grid; grid-template-columns: 92px 1fr auto; grid-template-rows: auto auto;
+      column-gap: 14px; width: 100%; text-align: left; background: #fffdf8;
+      border: 1px solid #e6dccb; padding: 12px; color: inherit;
+    }
+    .plate:hover { transform: translateY(-2px); }
+    .plate.is-on { border-color: #241c16; }
+    .plate .swatch {
+      grid-row: 1 / span 2; display: flex; align-items: flex-end; min-height: 96px; padding: 8px;
+      font-family: Fraunces, Georgia, serif; font-size: 28px; letter-spacing: -0.03em;
+    }
+    .plate .plate-name { font-family: Fraunces, Georgia, serif; font-size: 26px; letter-spacing: -0.03em; }
+    .plate .plate-meta, .plate .plate-orders { color: #6d6258; font-size: 13px; }
+    .plate .plate-orders { grid-column: 3; grid-row: 1 / span 2; align-self: end; }
+    .story {
+      margin-top: 18px; padding-top: 16px; border-top: 1px solid #e2d8c8;
+      display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 24px; align-items: start;
+    }
+    .story h3 { font-family: Fraunces, Georgia, serif; font-size: 40px; margin: 0 0 8px; font-weight: 560; letter-spacing: -0.03em; }
+    .story p { margin: 0 0 8px; font-size: 16px; line-height: 1.45; }
+    .directory, .index { list-style: none; margin: 8px 0 0; padding: 0; }
+    .directory li, .index li {
+      display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: baseline;
+      border-top: 1px solid #e2d8c8; padding: 14px 0;
+    }
+    .directory button.guest, .index button.cat {
+      background: none; border: 0; padding: 0; text-align: left; color: inherit;
+    }
+    .guest-name, .cat-name {
+      display: block; font-family: Fraunces, Georgia, serif; font-size: 32px; letter-spacing: -0.03em; font-weight: 560;
+    }
+    .quiet { color: #7a6e62; font-size: 14px; }
+    .market .texty {
+      background: none; border: 0; padding: 0; color: #241c16;
+      font-size: 14px; text-decoration: underline; text-underline-offset: 3px;
+    }
+    .market .page-label { margin: 26px 0 0; font-family: Fraunces, Georgia, serif; font-size: 42px; letter-spacing: -0.03em; font-weight: 560; }
+    .index li { grid-template-columns: 36px 1fr auto; }
+    .index .ord { font-family: Fraunces, Georgia, serif; color: #a89884; }
+
+    /* Floor — night expo command surface */
+    body[data-skin="floor"] { background: #10120f; color: #f4f1e6; }
+    .floor {
+      min-height: 100vh; background: #10120f; color: #f4f1e6;
+      font-family: Outfit, "Avenir Next", sans-serif;
+      padding: 18px 22px 96px;
+    }
+    .floor .cmdbar { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: end; }
+    .floor .gmark {
+      font-weight: 600; letter-spacing: -0.04em; font-size: 14px;
+      border: 1px solid #e8ff47; color: #e8ff47; padding: 6px 8px; border-radius: 8px;
+    }
+    .floor .cmd {
+      width: 100%; background: transparent; border: 0; border-bottom: 1px solid #34382f;
+      color: #f4f1e6; font-size: 28px; letter-spacing: -0.03em; padding: 6px 0 8px; border-radius: 0;
+    }
+    .floor .cmd::placeholder { color: #b7b3a6; }
+    .floor .cmd:focus { outline: none; border-bottom-color: #e8ff47; }
+    .floor .signed { font-size: 13px; color: #b7b3a6; text-align: right; }
+    .mods { display: flex; gap: 8px; margin: 14px 0 16px; flex-wrap: wrap; }
+    .floor .chip {
+      height: 32px; padding: 0 12px; border: 0; border-radius: 999px;
+      background: #1a1e18; color: #c9c5b8;
+    }
+    .floor .chip[aria-current="page"] { background: #e8ff47; color: #14160f; }
+    .board { display: grid; grid-template-columns: 280px 1fr; gap: 16px; align-items: start; }
+    .queue, .floor .panel { background: #171a15; border-radius: 16px; padding: 14px; }
+    .queue h2, .floor .panel h2 { margin: 0 0 8px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #8d917f; font-weight: 500; }
+    .q-item {
+      width: 100%; text-align: left; background: transparent; border: 0; color: inherit;
+      padding: 10px 8px; border-radius: 10px; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px;
+      animation: queue-in 180ms cubic-bezier(0.23, 1, 0.32, 1) both;
+    }
+    .q-item:nth-child(2) { animation-delay: 30ms; }
+    .q-item:nth-child(3) { animation-delay: 60ms; }
+    .q-item:nth-child(4) { animation-delay: 90ms; }
+    .q-item:nth-child(5) { animation-delay: 120ms; }
+    .q-item[aria-current="true"] { background: #242820; }
+    .q-item:hover { background: #20241c; }
+    .q-item .slot { grid-row: 1 / span 2; font-variant-numeric: tabular-nums; color: #e8ff47; font-size: 13px; }
+    .q-item strong { font-weight: 560; }
+    .q-item em { grid-column: 2; font-style: normal; color: #a7ab9c; font-size: 13px; }
+    .q-item.dim { animation: none; opacity: 0.35; }
+    .expo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+    .expo div { background: #10120f; border-radius: 12px; padding: 12px; }
+    .expo span { display: block; color: #8d917f; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .expo strong { display: block; margin-top: 4px; font-size: 40px; letter-spacing: -0.04em; font-weight: 560; }
+    .expo .hot strong { color: #e8ff47; }
+    .floor .rows { display: flex; flex-direction: column; }
+    .floor .row {
+      display: grid; grid-template-columns: 1.4fr 0.8fr 0.6fr auto; gap: 8px; align-items: center;
+      padding: 10px 4px; border-top: 1px solid #2a2e26; background: transparent; color: inherit;
+      text-align: left; border-left: 0; border-right: 0; border-bottom: 0; width: 100%;
+    }
+    .floor .row.is-on { background: #242820; }
+    .floor .act {
+      height: 30px; padding: 0 10px; border-radius: 999px; border: 1px solid #3a3f36; background: transparent; color: #f4f1e6;
+    }
+    .floor .act[aria-pressed="true"] { background: #e8ff47; color: #14160f; border-color: #e8ff47; }
+    .floor .hits { display: flex; flex-direction: column; gap: 6px; }
+    .floor .hit {
+      text-align: left; background: #10120f; color: inherit; border: 0; border-radius: 12px; padding: 12px;
+    }
+    .floor .hit small { display: block; color: #8d917f; letter-spacing: 0.08em; text-transform: uppercase; font-size: 11px; }
+    .floor .clear {
+      border: 0; background: transparent; color: #8d917f; padding: 0 0 8px; font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .ledger { grid-template-columns: 1fr; }
+      .ledger .rail { position: relative; height: auto; border-right: 0; border-bottom: 1px solid #e3dcd0; }
+      .ledger .rail-nav { flex-direction: row; flex-wrap: wrap; }
+      .ledger .who { margin-top: 8px; }
+      .ledger .metrics, .ledger .split, .ledger .work, .spread, .story, .market .names, .plates, .board, .expo {
+        grid-template-columns: 1fr;
+      }
+      .market { padding: 20px 16px 108px; }
+      .market h1 { font-size: 42px; }
+      .market .mast { flex-direction: column; align-items: flex-start; }
+      .floor .cmdbar { grid-template-columns: 1fr; }
+      .floor .row { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Picker — verbatim harness chrome */
+    .proto-picker {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2147483647;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 4px;
+      border-radius: 999px;
+      background: rgba(10, 10, 10, 0.82);
+      -webkit-backdrop-filter: blur(12px) saturate(1.4);
+      backdrop-filter: blur(12px) saturate(1.4);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+        0 8px 24px rgba(0, 0, 0, 0.24),
+        0 2px 6px rgba(0, 0, 0, 0.12);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px;
+      line-height: 1;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .proto-picker-highlight {
+      position: absolute;
+      top: 4px;
+      left: 0;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      will-change: transform;
+    }
+    .proto-picker[data-ready] .proto-picker-highlight {
+      transition:
+        transform 250ms cubic-bezier(0.23, 1, 0.32, 1),
+        width 250ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .proto-picker[data-ready] .proto-picker-highlight { transition: none; }
+    }
+    .proto-picker-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.55);
+      font: inherit;
+      cursor: pointer;
+      transition: color 150ms ease-out;
+    }
+    .proto-picker-item:hover { color: rgba(255, 255, 255, 0.85); }
+    .proto-picker-item:active { transform: scale(0.97); }
+    .proto-picker-item:focus-visible {
+      outline: 2px solid rgba(255, 255, 255, 0.4);
+      outline-offset: 2px;
+    }
+    .proto-picker-item[data-active] { color: #fff; }
+    .proto-picker-divider {
+      width: 1px;
+      height: 16px;
+      margin: 0 4px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .proto-picker-replay { padding: 0 10px; font-size: 14px; }
+    .proto-picker[data-position="top"] { bottom: auto; top: 24px; }
+  </style>
+</head>
+<body>
+  <div id="stage"></div>
+  <nav class="proto-picker" aria-label="Prototype variants">
+    <span class="proto-picker-highlight" aria-hidden="true"></span>
+    <button class="proto-picker-item" data-active aria-current="true">Ledger</button>
+    <button class="proto-picker-item">Market</button>
+    <button class="proto-picker-item">Floor</button>
+    <span class="proto-picker-divider" aria-hidden="true"></span>
+    <button class="proto-picker-item proto-picker-replay" aria-label="Replay animation (R)">↻</button>
+  </nav>
+  <script>
+    const PAGES = [
+      ["dashboard", "Dashboard"],
+      ["restaurants", "Restaurants"],
+      ["customers", "Customers"],
+      ["categories", "Categories"],
+    ];
+
+    const restaurants = [
+      { id: "nori", name: "Nori Counter", cuisine: "Japanese", city: "Oakland", branches: 4, orders: 312, status: "Active" },
+      { id: "mesa", name: "Mesa Verde", cuisine: "Mexican", city: "Berkeley", branches: 3, orders: 248, status: "Active" },
+      { id: "harbor", name: "Harbor & Rye", cuisine: "American", city: "San Francisco", branches: 2, orders: 196, status: "Active" },
+      { id: "lantern", name: "Little Lantern", cuisine: "Vietnamese", city: "Oakland", branches: 2, orders: 174, status: "Active" },
+      { id: "bun", name: "Bun Theory", cuisine: "Bakery", city: "Alameda", branches: 1, orders: 141, status: "Paused" },
+      { id: "oak", name: "Oak & Ember", cuisine: "Grill", city: "Emeryville", branches: 2, orders: 128, status: "Active" },
+      { id: "saffron", name: "Saffron Window", cuisine: "Indian", city: "Berkeley", branches: 1, orders: 85, status: "Active" },
+    ];
+
+    const pigments = {
+      nori: ["#1f4d3a", "#f6f1e8"],
+      mesa: ["#c4552a", "#fff7f2"],
+      harbor: ["#8a6232", "#fff8ef"],
+      lantern: ["#9c2f2f", "#fff6f4"],
+      bun: ["#e4c79a", "#241c16"],
+      oak: ["#3d3428", "#f6f1e8"],
+      saffron: ["#e1a325", "#241c16"],
+    };
+    const sparePigments = [["#234e52", "#f4fffe"], ["#7c2d12", "#fff6f2"], ["#3f6212", "#f7fee7"], ["#854d0e", "#fffbeb"]];
+
+    const customers = [
+      { id: "maya", name: "Maya Chen", email: "maya.chen@gmail.com", orders: 28, status: "Active", last: "Today, 12:10" },
+      { id: "jordan", name: "Jordan Ellis", email: "jordan.ellis@pm.me", orders: 19, status: "Active", last: "Today, 11:42" },
+      { id: "priya", name: "Priya Shah", email: "priya.shah@hey.com", orders: 14, status: "Active", last: "Yesterday" },
+      { id: "luis", name: "Luis Ortega", email: "l.ortega@fastmail.com", orders: 11, status: "Inactive", last: "12 Sep" },
+      { id: "hannah", name: "Hannah Brooks", email: "hannah.b@icloud.com", orders: 9, status: "Active", last: "Yesterday" },
+      { id: "kenji", name: "Kenji Watanabe", email: "kenji.w@fastmail.com", orders: 7, status: "Active", last: "Monday" },
+      { id: "aisha", name: "Aisha Rahman", email: "aisha.r@outlook.com", orders: 4, status: "Inactive", last: "3 Sep" },
+    ];
+
+    const categories = [
+      { id: "bowls", name: "Bowls", items: 46, orders: 410, visible: true },
+      { id: "noodles", name: "Noodles", items: 31, orders: 286, visible: true },
+      { id: "tacos", name: "Tacos", items: 22, orders: 204, visible: true },
+      { id: "sandwiches", name: "Sandwiches", items: 18, orders: 156, visible: true },
+      { id: "coffee", name: "Coffee", items: 14, orders: 132, visible: true },
+      { id: "desserts", name: "Desserts", items: 19, orders: 96, visible: false },
+    ];
+
+    const cuisines = [
+      { name: "Japanese", pct: 28 },
+      { name: "Mexican", pct: 22 },
+      { name: "Vietnamese", pct: 18 },
+      { name: "American", pct: 16 },
+      { name: "Indian", pct: 9 },
+      { name: "Bakery", pct: 7 },
+    ];
+
+    const queue = [
+      { id: "4821", kitchen: "Nori Counter", item: "Salmon rice bowl", slot: "12:20", state: "Ready" },
+      { id: "4820", kitchen: "Mesa Verde", item: "Al pastor trio", slot: "12:18", state: "Cooking" },
+      { id: "4816", kitchen: "Little Lantern", item: "Rare beef pho", slot: "12:05", state: "Picked up" },
+      { id: "4812", kitchen: "Harbor & Rye", item: "Rye pastrami", slot: "11:50", state: "Picked up" },
+    ];
+
+    const ui = {
+      page: "dashboard",
+      query: "",
+      selected: null,
+      kind: null,
+      composer: false,
+      draft: { name: "", cuisine: "", city: "" },
+      error: "",
+      notice: "",
+      ticket: "4821",
+    };
+
+    function esc(value) {
+      return String(value).replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+      }[ch]));
+    }
+
+    function fmt(n) {
+      return Number(n).toLocaleString("en-US");
+    }
+
+    function query() {
+      return ui.query.trim().toLowerCase();
+    }
+
+    function matches(parts) {
+      const q = query();
+      if (!q) return true;
+      return parts.join(" ").toLowerCase().includes(q);
+    }
+
+    function activeKitchens() {
+      return restaurants.filter((r) => r.status === "Active");
+    }
+
+    function busiest() {
+      const pool = activeKitchens();
+      const list = pool.length ? pool : restaurants;
+      return [...list].sort((a, b) => b.orders - a.orders)[0];
+    }
+
+    function pickupTotal() {
+      return restaurants.reduce((sum, r) => sum + r.orders, 0);
+    }
+
+    function pausedLine() {
+      const paused = restaurants.length - activeKitchens().length;
+      if (paused === 0) return "Every kitchen is serving.";
+      if (paused === 1) return "One kitchen is paused.";
+      return `${paused} kitchens are paused.`;
+    }
+
+    function initials(name) {
+      const parts = name.split(/\s+/).filter((part) => part !== "&" && part.toLowerCase() !== "and");
+      return parts.slice(0, 2).map((part) => part[0]).join("").toUpperCase();
+    }
+
+    function pigmentFor(id) {
+      return pigments[id] || ["#3f4a3a", "#f6f1e8"];
+    }
+
+    function filteredRestaurants() {
+      return restaurants.filter((r) => matches([r.name, r.cuisine, r.city, r.status]));
+    }
+
+    function filteredCustomers() {
+      return customers.filter((c) => matches([c.name, c.email, c.status]));
+    }
+
+    function filteredCategories() {
+      return categories.filter((c) => matches([c.name, c.visible ? "shown" : "hidden"]));
+    }
+
+    function findSelected() {
+      if (!ui.selected) return null;
+      const lists = { restaurant: restaurants, customer: customers, category: categories };
+      return (lists[ui.kind] || []).find((item) => item.id === ui.selected) || null;
+    }
+
+    function selectedIn(rows) {
+      const item = findSelected();
+      if (!item || !rows.some((row) => row.id === item.id)) return null;
+      return item;
+    }
+
+    function navButtons(className) {
+      return PAGES.map(([id, label]) => {
+        const current = ui.page === id ? ' aria-current="page"' : "";
+        return `<button type="button" class="${className}" data-page="${id}"${current}>${label}</button>`;
+      }).join("");
+    }
+
+    function noticeHtml() {
+      return ui.notice ? `<p class="notice">${esc(ui.notice)}</p>` : "";
+    }
+
+    function emptyHtml(noun) {
+      return `<div class="empty"><p>Nothing ${noun} matches “${esc(ui.query.trim())}”.</p><button type="button" class="ghost" data-clear>Clear filter</button></div>`;
+    }
+
+    function composerHtml() {
+      if (!ui.composer) return "";
+      return `
+        <form>
+          <strong>New kitchen</strong>
+          <input data-draft="name" placeholder="Kitchen name" value="${esc(ui.draft.name)}" aria-label="Kitchen name" />
+          <input data-draft="cuisine" placeholder="Cuisine" value="${esc(ui.draft.cuisine)}" aria-label="Cuisine" />
+          <input data-draft="city" placeholder="City" value="${esc(ui.draft.city)}" aria-label="City" />
+          ${ui.error ? `<p class="form-error">${esc(ui.error)}</p>` : ""}
+          <div><button type="submit" class="ghost">Add kitchen</button></div>
+        </form>`;
+    }
+
+    function ledgerBars(rows) {
+      const max = Math.max(...rows.map((row) => row.orders), 1);
+      if (!rows.length) return emptyHtml("on the board");
+      return rows.map((row) => `
+        <div class="bar-row">
+          <span>${esc(row.name)}</span>
+          <span class="track"><span class="fill" style="transform:scaleX(${row.orders / max})"></span></span>
+          <span class="num">${fmt(row.orders)}</span>
+        </div>`).join("");
+    }
+
+    function ledgerDetail(item) {
+      if (!item) return "";
+      if (ui.kind === "restaurant") {
+        return `
+          <aside class="inspector">
+            <h3>${esc(item.name)}</h3>
+            <p>${esc(item.cuisine)} · ${esc(item.city)}. Pickup windows are set by each branch manager.</p>
+            <div class="kv"><span>Branches</span><b>${item.branches}</b><span>Pickups this week</span><b>${fmt(item.orders)}</b><span>Status</span><b>${esc(item.status)}</b></div>
+            <button type="button" class="ghost" data-toggle="restaurant" data-id="${esc(item.id)}" aria-pressed="${item.status === "Active"}">${item.status === "Active" ? "Pause kitchen" : "Resume kitchen"}</button>
+          </aside>`;
+      }
+      if (ui.kind === "customer") {
+        return `
+          <aside class="inspector">
+            <h3>${esc(item.name)}</h3>
+            <p>${esc(item.email)}</p>
+            <div class="kv"><span>Pickups</span><b>${fmt(item.orders)}</b><span>Last order</span><b>${esc(item.last)}</b><span>Account</span><b>${esc(item.status)}</b></div>
+            <button type="button" class="ghost" data-toggle="customer" data-id="${esc(item.id)}" aria-pressed="${item.status === "Active"}">${item.status === "Active" ? "Deactivate" : "Reactivate"}</button>
+          </aside>`;
+      }
+      return `
+        <aside class="inspector">
+          <h3>${esc(item.name)}</h3>
+          <p>${fmt(item.items)} menu items across kitchens. ${fmt(item.orders)} ordered this week.</p>
+          <button type="button" class="ghost" data-toggle="category" data-id="${esc(item.id)}" aria-pressed="${item.visible}">${item.visible ? "Hide from menus" : "Show on menus"}</button>
+        </aside>`;
+    }
+
+    function ledgerLive() {
+      const selected = selectedIn(
+        ui.page === "restaurants" ? filteredRestaurants()
+          : ui.page === "customers" ? filteredCustomers()
+            : ui.page === "categories" ? filteredCategories()
+              : []
+      );
+      const workClass = selected ? "work" : "work solo";
+      if (ui.page === "dashboard") {
+        const top = busiest();
+        const rows = filteredRestaurants();
+        return `
+          ${noticeHtml()}
+          <section class="metrics" aria-label="This week">
+            <div><span>Pickups this week</span><strong>${fmt(pickupTotal())}</strong><em>Across ${restaurants.length} kitchens</em></div>
+            <div><span>Kitchens serving</span><strong>${activeKitchens().length}</strong><em>${restaurants.length - activeKitchens().length} paused</em></div>
+            <div><span>Busiest kitchen</span><strong style="font-size:20px;padding-top:6px">${esc(top.name)}</strong><em>${fmt(top.orders)} pickups</em></div>
+            <div><span>Guest rating</span><strong>4.6</strong><em>842 reviews</em></div>
+          </section>
+          <div class="split">
+            <section>
+              <h2>Pickups by kitchen</h2>
+              ${ledgerBars(rows)}
+            </section>
+            <section>
+              <h2>Cuisines</h2>
+              ${cuisines.map((c) => `
+                <div class="rank-row">
+                  <span>${esc(c.name)}</span>
+                  <span class="track"><span class="fill" style="transform:scaleX(${c.pct / 100})"></span></span>
+                  <span class="num">${c.pct}%</span>
+                </div>`).join("")}
+            </section>
+          </div>`;
+      }
+      if (ui.page === "restaurants") {
+        const rows = filteredRestaurants();
+        return `
+          ${noticeHtml()}
+          <div class="page-head">
+            <h2>${rows.length} kitchens</h2>
+            <button type="button" class="ghost" data-composer>${ui.composer ? "Close" : "Add kitchen"}</button>
+          </div>
+          ${composerHtml()}
+          <div class="${workClass}">
+            ${rows.length ? `<table>
+              <thead><tr><th>Kitchen</th><th>Cuisine</th><th>City</th><th>Branches</th><th>Pickups</th><th>Status</th></tr></thead>
+              <tbody>
+                ${rows.map((r) => `
+                  <tr data-select="${esc(r.id)}" data-kind="restaurant" class="${ui.selected === r.id && ui.kind === "restaurant" ? "is-on" : ""}">
+                    <td>${esc(r.name)}</td>
+                    <td>${esc(r.cuisine)}</td>
+                    <td>${esc(r.city)}</td>
+                    <td class="num">${r.branches}</td>
+                    <td class="num">${fmt(r.orders)}</td>
+                    <td><button type="button" class="linkish status ${r.status === "Paused" ? "bad" : ""}" data-toggle="restaurant" data-id="${esc(r.id)}" aria-pressed="${r.status === "Active"}">${esc(r.status)}</button></td>
+                  </tr>`).join("")}
+              </tbody>
+            </table>` : emptyHtml("in kitchens")}
+            ${ledgerDetail(selected)}
+          </div>`;
+      }
+      if (ui.page === "customers") {
+        const rows = filteredCustomers();
+        return `
+          ${noticeHtml()}
+          <div class="page-head"><h2>${rows.length} guests</h2></div>
+          <div class="${workClass}">
+            ${rows.length ? `<table>
+              <thead><tr><th>Name</th><th>Email</th><th>Pickups</th><th>Last order</th><th>Status</th></tr></thead>
+              <tbody>
+                ${rows.map((c) => `
+                  <tr data-select="${esc(c.id)}" data-kind="customer" class="${ui.selected === c.id && ui.kind === "customer" ? "is-on" : ""}">
+                    <td>${esc(c.name)}</td>
+                    <td>${esc(c.email)}</td>
+                    <td class="num">${c.orders}</td>
+                    <td>${esc(c.last)}</td>
+                    <td><button type="button" class="linkish status ${c.status === "Inactive" ? "bad" : ""}" data-toggle="customer" data-id="${esc(c.id)}" aria-pressed="${c.status === "Active"}">${esc(c.status)}</button></td>
+                  </tr>`).join("")}
+              </tbody>
+            </table>` : emptyHtml("in guests")}
+            ${ledgerDetail(selected)}
+          </div>`;
+      }
+      const rows = filteredCategories();
+      return `
+        ${noticeHtml()}
+        <div class="page-head"><h2>${rows.length} categories</h2></div>
+        <div class="${workClass}">
+          ${rows.length ? `<table>
+            <thead><tr><th>Category</th><th>Items</th><th>Orders</th><th>On menus</th></tr></thead>
+            <tbody>
+              ${rows.map((c) => `
+                <tr data-select="${esc(c.id)}" data-kind="category" class="${ui.selected === c.id && ui.kind === "category" ? "is-on" : ""}">
+                  <td>${esc(c.name)}</td>
+                  <td class="num">${c.items}</td>
+                  <td class="num">${fmt(c.orders)}</td>
+                  <td><button type="button" class="linkish" data-toggle="category" data-id="${esc(c.id)}" aria-pressed="${c.visible}">${c.visible ? "Shown" : "Hidden"}</button></td>
+                </tr>`).join("")}
+            </tbody>
+          </table>` : emptyHtml("in categories")}
+          ${ledgerDetail(selected)}
+        </div>`;
+    }
+
+    function ledger() {
+      document.body.dataset.skin = "ledger";
+      document.title = "Grab-n-Eat admin · Ledger";
+      const label = PAGES.find(([id]) => id === ui.page)[1];
+      return `
+        <div class="ledger enter">
+          <aside class="rail">
+            <div class="brand"><span class="mark">GnE</span><span><strong>Grab-n-Eat</strong><small>Platform admin</small></span></div>
+            <nav class="rail-nav" aria-label="Admin">${navButtons("")}</nav>
+            <div class="who">Amina Rahman<span>Wednesday 7 Oct</span></div>
+          </aside>
+          <div class="main">
+            <header class="top">
+              <div><h1>${label}</h1><p>Filter the page you are on. Pausing a kitchen updates the board.</p></div>
+              <label class="search"><input data-search value="${esc(ui.query)}" placeholder="Filter this page" aria-label="Filter this page" /><button type="button" class="ghost" data-clear>Clear</button></label>
+            </header>
+            <div data-live>${ledgerLive()}</div>
+          </div>
+        </div>`;
+    }
+
+    function marketStory(item) {
+      if (!item || ui.kind !== "restaurant") return "";
+      return `
+        <section class="story inspector">
+          <div>
+            <p class="kicker">${esc(item.cuisine)} · ${esc(item.city)}</p>
+            <h3>${esc(item.name)}</h3>
+            <p>${item.branches} ${item.branches === 1 ? "branch" : "branches"} took ${fmt(item.orders)} pickups this week. ${item.status === "Paused" ? "The kitchen is paused, so it drops off the busiest list." : "The kitchen is serving."}</p>
+          </div>
+          <div>
+            <button type="button" class="texty" data-toggle="restaurant" data-id="${esc(item.id)}" aria-pressed="${item.status === "Active"}">${item.status === "Active" ? "Pause this kitchen" : "Resume this kitchen"}</button>
+          </div>
+        </section>`;
+    }
+
+    function marketPlates(rows) {
+      if (!rows.length) return emptyHtml("in kitchens");
+      return `<div class="plates">${rows.map((r) => {
+        const [bg, ink] = pigmentFor(r.id);
+        const on = ui.selected === r.id && ui.kind === "restaurant" ? " is-on" : "";
+        return `
+          <button type="button" class="plate${on}" data-select="${esc(r.id)}" data-kind="restaurant">
+            <span class="swatch" style="background:${bg};color:${ink}">${esc(initials(r.name))}</span>
+            <span class="plate-name">${esc(r.name)}</span>
+            <span class="plate-meta">${esc(r.cuisine)} · ${esc(r.city)} · ${r.branches} ${r.branches === 1 ? "branch" : "branches"}</span>
+            <span class="plate-orders">${fmt(r.orders)} pickups<br>${esc(r.status)}</span>
+          </button>`;
+      }).join("")}</div>`;
+    }
+
+    function marketLive() {
+      const selected = selectedIn(
+        ui.page === "restaurants" ? filteredRestaurants()
+          : ui.page === "customers" ? filteredCustomers()
+            : ui.page === "categories" ? filteredCategories()
+              : filteredRestaurants()
+      );
+      if (ui.page === "dashboard") {
+        const top = busiest();
+        const names = [...activeKitchens()].sort((a, b) => b.orders - a.orders).slice(0, 3);
+        return `
+          ${noticeHtml()}
+          <div class="spread">
+            <div>
+              <h1>${activeKitchens().length} kitchens serving. ${fmt(pickupTotal())} pickups.</h1>
+              <p class="deck">Busiest right now is ${esc(top.name)}, with ${fmt(top.orders)} pickups. Guests still sit at 4.6 from 842 reviews. ${pausedLine()}</p>
+            </div>
+            <div>
+              <p class="kicker">Share of orders</p>
+              <ol class="rank">
+                ${cuisines.map((c, i) => `<li><span>0${i + 1}</span><b>${esc(c.name)}</b><em>${c.pct}%</em></li>`).join("")}
+              </ol>
+            </div>
+          </div>
+          <section class="strip">
+            <p class="kicker">Busiest today</p>
+            <div class="names">
+              ${names.map((r) => `
+                <button type="button" data-select="${esc(r.id)}" data-kind="restaurant">
+                  <strong>${esc(r.name)}</strong>
+                  <span>${esc(r.cuisine)} · ${fmt(r.orders)} pickups</span>
+                </button>`).join("")}
+            </div>
+            ${marketStory(selected && ui.kind === "restaurant" ? selected : null)}
+          </section>`;
+      }
+      if (ui.page === "restaurants") {
+        const rows = filteredRestaurants();
+        return `
+          ${noticeHtml()}
+          <div class="page-head" style="display:flex;justify-content:space-between;align-items:baseline">
+            <h2 class="page-label">Kitchens</h2>
+            <button type="button" class="texty" data-composer>${ui.composer ? "Close form" : "Add a kitchen"}</button>
+          </div>
+          ${composerHtml()}
+          ${marketPlates(rows)}
+          ${marketStory(selected)}`;
+      }
+      if (ui.page === "customers") {
+        const rows = filteredCustomers();
+        return `
+          ${noticeHtml()}
+          <h2 class="page-label">Guests</h2>
+          ${rows.length ? `<ul class="directory">${rows.map((c) => `
+            <li>
+              <button type="button" class="guest" data-select="${esc(c.id)}" data-kind="customer">
+                <span class="guest-name">${esc(c.name)}</span>
+                <span class="quiet">${esc(c.email)} · ${c.orders} pickups · ${esc(c.last)}</span>
+              </button>
+              <button type="button" class="texty" data-toggle="customer" data-id="${esc(c.id)}" aria-pressed="${c.status === "Active"}">${esc(c.status)}</button>
+            </li>`).join("")}</ul>
+            ${selected && ui.kind === "customer" ? `<section class="story inspector"><div><h3>${esc(selected.name)}</h3><p>${esc(selected.email)}. Last pickup ${esc(selected.last)}. ${selected.status === "Active" ? "They can still order." : "Their account is inactive."}</p></div></section>` : ""}` : emptyHtml("in guests")}`;
+      }
+      const rows = filteredCategories();
+      return `
+        ${noticeHtml()}
+        <h2 class="page-label">Menu index</h2>
+        ${rows.length ? `<ol class="index">${rows.map((c, i) => `
+          <li>
+            <span class="ord">${String(i + 1).padStart(2, "0")}</span>
+            <button type="button" class="cat" data-select="${esc(c.id)}" data-kind="category">
+              <span class="cat-name">${esc(c.name)}</span>
+              <span class="quiet">${c.items} items · ${fmt(c.orders)} orders</span>
+            </button>
+            <button type="button" class="texty" data-toggle="category" data-id="${esc(c.id)}" aria-pressed="${c.visible}">${c.visible ? "Shown" : "Hidden"}</button>
+          </li>`).join("")}</ol>` : emptyHtml("in the index")}`;
+    }
+
+    function market() {
+      document.body.dataset.skin = "market";
+      document.title = "Grab-n-Eat admin · Market";
+      return `
+        <article class="market enter">
+          <header class="mast">
+            <div class="brand-name">Grab-n-Eat<small>Platform desk</small></div>
+            <nav aria-label="Admin">${navButtons("")}</nav>
+            <div class="signed"><strong>Amina Rahman</strong>Wednesday 7 October</div>
+          </header>
+          <div class="find">
+            <label><input data-search value="${esc(ui.query)}" placeholder="Search kitchens, guests, and categories" aria-label="Search kitchens, guests, and categories" /></label>
+          </div>
+          <div data-live>${marketLive()}</div>
+        </article>`;
+    }
+
+    function floorQueue() {
+      return `
+        <aside class="queue">
+          <h2>Pickup window</h2>
+          ${queue.map((ticket) => {
+            const dim = query() && !matches([ticket.kitchen, ticket.item, ticket.state, ticket.id]) ? " dim" : "";
+            const on = ui.ticket === ticket.id ? ' aria-current="true"' : "";
+            return `
+              <button type="button" class="q-item${dim}" data-ticket="${esc(ticket.id)}"${on}>
+                <span class="slot">${esc(ticket.slot)}</span>
+                <strong>#${esc(ticket.id)} ${esc(ticket.kitchen)}</strong>
+                <em>${esc(ticket.item)} · ${esc(ticket.state)}</em>
+              </button>`;
+          }).join("")}
+        </aside>`;
+    }
+
+    function floorTicket() {
+      const ticket = queue.find((item) => item.id === ui.ticket) || queue[0];
+      const done = ticket.state === "Picked up";
+      return `
+        <aside class="dossier inspector">
+          <p class="kicker" style="letter-spacing:.14em;text-transform:uppercase;font-size:11px;color:#8d917f">Ticket #${esc(ticket.id)}</p>
+          <h3>${esc(ticket.item)}</h3>
+          <p>${esc(ticket.kitchen)} · slot ${esc(ticket.slot)} · ${esc(ticket.state)}</p>
+          <button type="button" class="act" data-picked ${done ? "disabled" : ""}>${done ? "Already with the guest" : "Mark picked up"}</button>
+        </aside>`;
+    }
+
+    function floorSearchHits() {
+      const kitchens = filteredRestaurants();
+      const guests = filteredCustomers();
+      const cats = filteredCategories();
+      if (!kitchens.length && !guests.length && !cats.length) return emptyHtml("across the desk");
+      const hit = (kind, page, item, title, meta) => `
+        <button type="button" class="hit" data-jump="${page}" data-id="${esc(item.id)}" data-kind="${kind}">
+          <small>${kind}</small>${esc(title)}<span class="quiet">${esc(meta)}</span>
+        </button>`;
+      return `<div class="hits">
+        ${kitchens.map((r) => hit("restaurant", "restaurants", r, r.name, `${r.cuisine} · ${r.city} · ${r.status}`)).join("")}
+        ${guests.map((c) => hit("customer", "customers", c, c.name, c.email)).join("")}
+        ${cats.map((c) => hit("category", "categories", c, c.name, c.visible ? "Shown on menus" : "Hidden")).join("")}
+      </div>`;
+    }
+
+    function floorRows(items, render) {
+      if (!items.length) return emptyHtml("here");
+      return `<div class="rows">${items.map(render).join("")}</div>`;
+    }
+
+    function floorLive() {
+      const counts = {
+        Ready: queue.filter((t) => t.state === "Ready").length,
+        Cooking: queue.filter((t) => t.state === "Cooking").length,
+        "Picked up": queue.filter((t) => t.state === "Picked up").length,
+      };
+      if (ui.page === "dashboard") {
+        return `
+          ${noticeHtml()}
+          <div class="panel">
+            ${query() ? `<h2>Matches</h2>${floorSearchHits()}` : `
+              <div class="expo">
+                <div class="hot"><span>Ready</span><strong>${counts.Ready}</strong></div>
+                <div><span>Cooking</span><strong>${counts.Cooking}</strong></div>
+                <div><span>Picked up</span><strong>${counts["Picked up"]}</strong></div>
+              </div>
+              <h2>Kitchens still serving · ${activeKitchens().length}</h2>
+              ${floorRows([...activeKitchens()].sort((a, b) => b.orders - a.orders), (r) => `
+                <button type="button" class="row" data-jump="restaurants" data-id="${esc(r.id)}" data-kind="restaurant">
+                  <strong>${esc(r.name)}</strong><span>${esc(r.cuisine)}</span><span>${fmt(r.orders)}</span><span>${esc(r.city)}</span>
+                </button>`)}
+            `}
+          </div>`;
+      }
+      if (ui.page === "restaurants") {
+        const rows = filteredRestaurants();
+        return `
+          ${noticeHtml()}
+          <div class="panel">
+            <div class="page-head" style="display:flex;justify-content:space-between;align-items:center">
+              <h2 style="margin:0">Kitchens</h2>
+              <button type="button" class="act" data-composer>${ui.composer ? "Close" : "Add kitchen"}</button>
+            </div>
+            ${composerHtml()}
+            ${floorRows(rows, (r) => `
+              <div class="row ${ui.selected === r.id ? "is-on" : ""}" data-select="${esc(r.id)}" data-kind="restaurant" role="button" tabindex="0">
+                <strong>${esc(r.name)}</strong>
+                <span>${esc(r.cuisine)} · ${esc(r.city)}</span>
+                <span>${fmt(r.orders)} pickups</span>
+                <button type="button" class="act" data-toggle="restaurant" data-id="${esc(r.id)}" aria-pressed="${r.status === "Active"}">${esc(r.status)}</button>
+              </div>`)}
+            ${selectedIn(rows) ? floorDossierRestaurant(selectedIn(rows)) : ""}
+          </div>`;
+      }
+      if (ui.page === "customers") {
+        return `
+          ${noticeHtml()}
+          <div class="panel">
+            <h2>Guests</h2>
+            ${floorRows(filteredCustomers(), (c) => `
+              <div class="row">
+                <strong>${esc(c.name)}</strong>
+                <span>${esc(c.email)}</span>
+                <span>${c.orders} · ${esc(c.last)}</span>
+                <button type="button" class="act" data-toggle="customer" data-id="${esc(c.id)}" aria-pressed="${c.status === "Active"}">${esc(c.status)}</button>
+              </div>`)}
+          </div>`;
+      }
+      return `
+        ${noticeHtml()}
+        <div class="panel">
+          <h2>Categories</h2>
+          ${floorRows(filteredCategories(), (c) => `
+            <div class="row">
+              <strong>${esc(c.name)}</strong>
+              <span>${c.items} items</span>
+              <span>${fmt(c.orders)} orders</span>
+              <button type="button" class="act" data-toggle="category" data-id="${esc(c.id)}" aria-pressed="${c.visible}">${c.visible ? "Shown" : "Hidden"}</button>
+            </div>`)}
+        </div>`;
+    }
+
+    function floorDossierRestaurant(item) {
+      return `
+        <aside class="dossier inspector" style="margin-top:12px">
+          <h3>${esc(item.name)}</h3>
+          <p>${esc(item.cuisine)} in ${esc(item.city)}. ${item.branches} ${item.branches === 1 ? "branch" : "branches"}, ${fmt(item.orders)} pickups this week.</p>
+          <button type="button" class="act" data-toggle="restaurant" data-id="${esc(item.id)}" aria-pressed="${item.status === "Active"}">${item.status === "Active" ? "Pause kitchen" : "Resume kitchen"}</button>
+        </aside>`;
+    }
+
+    function floor() {
+      document.body.dataset.skin = "floor";
+      document.title = "Grab-n-Eat admin · Floor";
+      return `
+        <article class="floor enter">
+          <header class="cmdbar">
+            <div class="gmark">GnE</div>
+            <input class="cmd" data-search value="${esc(ui.query)}" placeholder="Find a kitchen, guest, category, or ticket" aria-label="Command search" />
+            <div class="signed">Amina Rahman<br>Admin · 7 Oct</div>
+          </header>
+          <div class="mods" role="tablist" aria-label="Admin">${navButtons("chip")}</div>
+          <div class="board">
+            ${floorQueue()}
+            <div>
+              ${floorTicket()}
+              <div data-live style="margin-top:12px">${floorLive()}</div>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    const variants = [ledger, market, floor];
+    const live = [ledgerLive, marketLive, floorLive];
+
+    const stage = document.getElementById("stage");
+    const picker = document.querySelector(".proto-picker");
+    const highlight = picker.querySelector(".proto-picker-highlight");
+    const items = [...picker.querySelectorAll(".proto-picker-item:not(.proto-picker-replay)")];
+    const replay = picker.querySelector(".proto-picker-replay");
+    let current = 0;
+
+    function moveHighlight() {
+      const el = items[current];
+      highlight.style.width = el.offsetWidth + "px";
+      highlight.style.transform = `translateX(${el.offsetLeft}px)`;
+    }
+
+    function mount(i) {
+      stage.innerHTML = "";
+      requestAnimationFrame(() => { stage.innerHTML = variants[i](); });
+    }
+
+    function setActive(i) {
+      if (i < 0 || i >= variants.length) return;
+      current = i;
+      items.forEach((el, j) => {
+        el.toggleAttribute("data-active", j === i);
+        if (j === i) el.setAttribute("aria-current", "true");
+        else el.removeAttribute("aria-current");
+      });
+      moveHighlight();
+      const url = new URL(location);
+      url.searchParams.set("v", i + 1);
+      history.replaceState(null, "", url);
+      mount(i);
+    }
+
+    function paintLive() {
+      const el = stage.querySelector("[data-live]");
+      if (!el) return;
+      el.innerHTML = live[current]();
+    }
+
+    items.forEach((el, i) => el.addEventListener("click", () => setActive(i)));
+    replay?.addEventListener("click", () => mount(current));
+    window.addEventListener("resize", moveHighlight);
+
+    document.addEventListener("keydown", (e) => {
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const num = parseInt(e.key, 10);
+      if (num >= 1 && num <= variants.length) setActive(num - 1);
+      else if (e.key === "ArrowRight") setActive((current + 1) % variants.length);
+      else if (e.key === "ArrowLeft") setActive((current - 1 + variants.length) % variants.length);
+      else if (e.key === "r" || e.key === "R") mount(current);
+    });
+
+    stage.addEventListener("click", (event) => {
+      const clear = event.target.closest("[data-clear]");
+      if (clear) {
+        ui.query = "";
+        const input = stage.querySelector("[data-search]");
+        if (input) input.value = "";
+        paintLive();
+        stage.querySelectorAll(".q-item").forEach((el) => el.classList.remove("dim"));
+        return;
+      }
+      const pageBtn = event.target.closest("[data-page]");
+      if (pageBtn) {
+        ui.page = pageBtn.dataset.page;
+        ui.query = "";
+        ui.selected = null;
+        ui.kind = null;
+        ui.composer = false;
+        ui.error = "";
+        ui.notice = "";
+        mount(current);
+        return;
+      }
+      const jump = event.target.closest("[data-jump]");
+      if (jump) {
+        ui.page = jump.dataset.jump;
+        ui.selected = jump.dataset.id || null;
+        ui.kind = jump.dataset.kind || null;
+        ui.query = "";
+        ui.notice = "";
+        mount(current);
+        return;
+      }
+      const toggle = event.target.closest("[data-toggle]");
+      if (toggle) {
+        const id = toggle.dataset.id;
+        if (toggle.dataset.toggle === "restaurant") {
+          const row = restaurants.find((item) => item.id === id);
+          if (row) {
+            row.status = row.status === "Active" ? "Paused" : "Active";
+            ui.notice = `${row.name} is ${row.status.toLowerCase()}.`;
+          }
+        } else if (toggle.dataset.toggle === "customer") {
+          const row = customers.find((item) => item.id === id);
+          if (row) {
+            row.status = row.status === "Active" ? "Inactive" : "Active";
+            ui.notice = `${row.name} is ${row.status.toLowerCase()}.`;
+          }
+        } else if (toggle.dataset.toggle === "category") {
+          const row = categories.find((item) => item.id === id);
+          if (row) {
+            row.visible = !row.visible;
+            ui.notice = `${row.name} is ${row.visible ? "shown on menus" : "hidden"}.`;
+          }
+        }
+        paintLive();
+        return;
+      }
+      const ticket = event.target.closest("[data-ticket]");
+      if (ticket) {
+        ui.ticket = ticket.dataset.ticket;
+        mount(current);
+        return;
+      }
+      if (event.target.closest("[data-picked]")) {
+        const ticketRow = queue.find((item) => item.id === ui.ticket);
+        if (ticketRow && ticketRow.state !== "Picked up") {
+          ticketRow.state = "Picked up";
+          ui.notice = `#${ticketRow.id} marked picked up.`;
+          mount(current);
+        }
+        return;
+      }
+      if (event.target.closest("[data-composer]")) {
+        ui.composer = !ui.composer;
+        ui.error = "";
+        paintLive();
+        return;
+      }
+      const select = event.target.closest("[data-select]");
+      if (select) {
+        const id = select.dataset.select;
+        const kind = select.dataset.kind;
+        if (ui.selected === id && ui.kind === kind) {
+          ui.selected = null;
+          ui.kind = null;
+        } else {
+          ui.selected = id;
+          ui.kind = kind;
+        }
+        paintLive();
+      }
+    });
+
+    stage.addEventListener("input", (event) => {
+      const target = event.target;
+      if (target.matches("[data-search]")) {
+        ui.query = target.value;
+        if (current === 2) {
+          const liveEl = stage.querySelector("[data-live]");
+          if (liveEl) liveEl.innerHTML = floorLive();
+          stage.querySelectorAll(".q-item").forEach((el) => {
+            const ticket = queue.find((item) => item.id === el.dataset.ticket);
+            const dim = query() && ticket && !matches([ticket.kitchen, ticket.item, ticket.state, ticket.id]);
+            el.classList.toggle("dim", Boolean(dim));
+          });
+        } else {
+          paintLive();
+        }
+        return;
+      }
+      if (target.matches("[data-draft]")) ui.draft[target.dataset.draft] = target.value;
+    });
+
+    stage.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const name = ui.draft.name.trim();
+      if (!name) {
+        ui.error = "Name the kitchen first.";
+        paintLive();
+        return;
+      }
+      const id = `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}-${String(Date.now()).slice(-4)}`;
+      pigments[id] = sparePigments[restaurants.length % sparePigments.length];
+      restaurants.unshift({
+        id,
+        name,
+        cuisine: ui.draft.cuisine.trim() || "New",
+        city: ui.draft.city.trim() || "Oakland",
+        branches: 1,
+        orders: 0,
+        status: "Active",
+      });
+      ui.draft = { name: "", cuisine: "", city: "" };
+      ui.composer = false;
+      ui.error = "";
+      ui.selected = id;
+      ui.kind = "restaurant";
+      ui.page = "restaurants";
+      ui.notice = `${name} is on the board.`;
+      mount(current);
+    });
+
+    stage.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      const row = event.target.closest("[data-select]");
+      if (row && row.tagName !== "BUTTON" && row.tagName !== "TR") row.click();
+    });
+
+    setActive((parseInt(new URLSearchParams(location.search).get("v"), 10) || 1) - 1);
+    requestAnimationFrame(() => requestAnimationFrame(() => picker.setAttribute("data-ready", "")));
+  </script>
+</body>
+</html>

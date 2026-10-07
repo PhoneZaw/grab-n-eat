@@ -20,34 +20,34 @@ export default function TrackingPage({
       <ProtoNav cta="Avery" />
       <main className="mx-auto grid max-w-6xl gap-10 px-5 py-12 lg:grid-cols-[1.1fr_0.9fr]">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[#c4542c]">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-[#2F5BFF]">
             Order 4821 · today {slot}
           </p>
-          <h1 className="mt-3 [font-family:var(--font-display),Georgia,serif] text-5xl leading-tight tracking-tight sm:text-6xl">
+          <h1 className="mt-3 [font-family:var(--font-display),sans-serif] text-5xl leading-tight tracking-tight sm:text-6xl">
             Being prepared.
           </h1>
-          <p className="mt-4 max-w-md text-lg text-[#5c564e]">
+          <p className="mt-4 max-w-md text-lg text-[#3D465C]">
             {restaurant.name} has your window. Walk in at {slot} and give them
             this code.
           </p>
-          <div className="mt-8 inline-flex flex-col rounded-[28px] bg-[#1a1714] px-8 py-6 text-[#f3eee6]">
-            <span className="text-[11px] uppercase tracking-[0.18em] text-[#d7c4a8]">
+          <div className="mt-8 inline-flex flex-col rounded-[28px] bg-[#101828] px-8 py-6 text-[#F4F6FB]">
+            <span className="text-[11px] uppercase tracking-[0.18em] text-[#9DB0FF]">
               Pickup code
             </span>
-            <span className="[font-family:var(--font-display),Georgia,serif] text-6xl tracking-[0.12em]">
+            <span className="[font-family:var(--font-display),sans-serif] text-6xl tracking-[0.12em]">
               4821
             </span>
-            <span className="text-sm text-[#d7c4a8]">For {name}</span>
+            <span className="text-sm text-[#9DB0FF]">For {name}</span>
           </div>
           <ol className="mt-10 grid gap-4 sm:grid-cols-4">
             {steps.map((step, i) => (
-              <li key={step} className="border-t border-[#1a1714] pt-3">
-                <p className="text-[11px] tracking-[0.16em] text-[#8a8175]">
+              <li key={step} className="border-t border-[#101828] pt-3">
+                <p className="text-[11px] tracking-[0.16em] text-[#7B8499]">
                   0{i + 1}
                 </p>
                 <p
                   className={`mt-1 text-sm ${
-                    i === 1 ? "text-[#c4542c]" : "text-[#1a1714]"
+                    i === 1 ? "text-[#2F5BFF]" : "text-[#101828]"
                   }`}
                 >
                   {step}
@@ -57,16 +57,16 @@ export default function TrackingPage({
             ))}
           </ol>
         </div>
-        <aside className="rounded-[32px] border border-[#e4d9c8] bg-[#fffdf8] p-6">
+        <aside className="rounded-[32px] border border-[#E2E6F0] bg-[#FFFFFF] p-6">
           <img
             src={restaurant.portrait}
             alt=""
             className="aspect-[5/3] w-full rounded-2xl object-cover"
           />
-          <h2 className="mt-5 [font-family:var(--font-display),Georgia,serif] text-3xl">
+          <h2 className="mt-5 [font-family:var(--font-display),sans-serif] text-3xl">
             {restaurant.name}
           </h2>
-          <p className="mt-1 text-sm text-[#6f675e]">
+          <p className="mt-1 text-sm text-[#5A6478]">
             {restaurant.neighborhood} · {restaurant.miles} mi · {restaurant.hours}
           </p>
           <p className="mt-4 text-sm leading-relaxed">{items}</p>
@@ -74,13 +74,13 @@ export default function TrackingPage({
           <div className="mt-6 flex gap-3">
             <Link
               href="/prototype/orders"
-              className="rounded-full bg-[#1a1714] px-4 py-2 text-sm text-[#f3eee6]"
+              className="rounded-full bg-[#101828] px-4 py-2 text-sm text-[#F4F6FB]"
             >
               All orders
             </Link>
             <Link
               href={`/prototype/restaurant?slug=${restaurant.slug}`}
-              className="rounded-full border border-[#e4d9c8] px-4 py-2 text-sm"
+              className="rounded-full border border-[#E2E6F0] px-4 py-2 text-sm"
             >
               Menu again
             </Link>

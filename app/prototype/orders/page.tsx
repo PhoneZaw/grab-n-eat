@@ -49,29 +49,29 @@ export default function OrdersPage() {
     <>
       <ProtoNav cta="Avery" />
       <main className="mx-auto max-w-3xl px-5 py-12">
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[#c4542c]">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-[#2F5BFF]">
           Avery Chen
         </p>
-        <h1 className="mt-2 [font-family:var(--font-display),Georgia,serif] text-5xl tracking-tight">
+        <h1 className="mt-2 [font-family:var(--font-display),sans-serif] text-5xl tracking-tight">
           Your pickups
         </h1>
-        <p className="mt-3 text-[#5c564e]">
+        <p className="mt-3 text-[#3D465C]">
           A short history. Reorder sends you back to the same kitchen.
         </p>
-        <ul className="mt-8 divide-y divide-[#e4d9c8] border-y border-[#e4d9c8]">
+        <ul className="mt-8 divide-y divide-[#E2E6F0] border-y border-[#E2E6F0]">
           {orders.map((o) => (
             <li key={o.id} className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-[11px] uppercase tracking-[0.16em] text-[#8a8175]">
+                <p className="text-[11px] uppercase tracking-[0.16em] text-[#7B8499]">
                   #{o.id} · {o.when}
                 </p>
-                <p className="mt-1 [font-family:var(--font-display),Georgia,serif] text-2xl">
+                <p className="mt-1 [font-family:var(--font-display),sans-serif] text-2xl">
                   {o.place}
                 </p>
-                <p className="text-sm text-[#6f675e]">
+                <p className="text-sm text-[#5A6478]">
                   {o.items} · {o.total}
                 </p>
-                <p className={`mt-1 text-sm ${o.live ? "text-[#c4542c]" : "text-[#3f5344]"}`}>
+                <p className={`mt-1 text-sm ${o.live ? "text-[#2F5BFF]" : "text-[#0B8A5B]"}`}>
                   {o.state}
                 </p>
               </div>
@@ -79,14 +79,14 @@ export default function OrdersPage() {
                 {o.live ? (
                   <Link
                     href={`/prototype/tracking?slug=${o.slug}&at=12:15&name=Avery%20Chen&total=22&items=${encodeURIComponent(o.items)}`}
-                    className="rounded-full bg-[#1a1714] px-4 py-2 text-sm text-[#f3eee6]"
+                    className="rounded-full bg-[#101828] px-4 py-2 text-sm text-[#F4F6FB]"
                   >
                     Track
                   </Link>
                 ) : null}
                 <Link
                   href={`/prototype/restaurant?slug=${o.slug}`}
-                  className="rounded-full border border-[#e4d9c8] px-4 py-2 text-sm"
+                  className="rounded-full border border-[#E2E6F0] px-4 py-2 text-sm"
                 >
                   Order again
                 </Link>

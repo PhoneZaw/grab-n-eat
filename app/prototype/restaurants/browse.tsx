@@ -47,14 +47,14 @@ export default function Browse() {
 
   return (
     <div>
-      <div className="sticky top-[6.75rem] z-30 border-b border-[#e4d9c8] bg-[#f3eee6]/95 backdrop-blur md:top-16">
+      <div className="sticky top-[6.75rem] z-30 border-b border-[#E2E6F0] bg-[#F4F6FB]/95 backdrop-blur md:top-16">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-3">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search kitchens, dishes, neighborhoods"
-              className="w-full rounded-full border border-[#e4d9c8] bg-[#fffdf8] px-4 py-2.5 text-sm outline-none focus:border-[#1a1714]"
+              className="w-full rounded-full border border-[#E2E6F0] bg-[#FFFFFF] px-4 py-2.5 text-sm outline-none focus:border-[#101828]"
             />
             <div className="flex shrink-0 items-center gap-2">
               <button
@@ -62,20 +62,20 @@ export default function Browse() {
                 onClick={() => setOpenOnly((v) => !v)}
                 className={`rounded-full border px-3 py-2 text-sm ${
                   openOnly
-                    ? "border-[#1a1714] bg-[#1a1714] text-[#f3eee6]"
-                    : "border-[#e4d9c8] bg-[#fffdf8]"
+                    ? "border-[#101828] bg-[#101828] text-[#F4F6FB]"
+                    : "border-[#E2E6F0] bg-[#FFFFFF]"
                 }`}
               >
                 Open now
               </button>
-              <label className="text-sm text-[#5c564e]">
+              <label className="text-sm text-[#3D465C]">
                 <span className="sr-only">Sort</span>
                 <select
                   value={sort}
                   onChange={(e) =>
                     setSort(e.target.value as (typeof sorts)[number]["id"])
                   }
-                  className="rounded-full border border-[#e4d9c8] bg-[#fffdf8] px-3 py-2 outline-none"
+                  className="rounded-full border border-[#E2E6F0] bg-[#FFFFFF] px-3 py-2 outline-none"
                 >
                   {sorts.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -94,8 +94,8 @@ export default function Browse() {
                 onClick={() => setCuisine(c)}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-sm ${
                   cuisine === c
-                    ? "bg-[#c4542c] text-white"
-                    : "bg-[#fffdf8] text-[#3c3832] ring-1 ring-[#e4d9c8]"
+                    ? "bg-[#2F5BFF] text-white"
+                    : "bg-[#FFFFFF] text-[#2A3142] ring-1 ring-[#E2E6F0]"
                 }`}
               >
                 {c}
@@ -107,16 +107,16 @@ export default function Browse() {
 
       <div className="mx-auto grid max-w-6xl gap-8 px-5 py-8 lg:grid-cols-[1fr_280px]">
         <div>
-          <p className="text-sm text-[#6f675e]">
+          <p className="text-sm text-[#5A6478]">
             {list.length} kitchen{list.length === 1 ? "" : "s"}
             {at ? ` · aiming for ${at}` : ""} · South Congress and nearby
           </p>
           {list.length === 0 ? (
-            <div className="mt-8 rounded-3xl border border-dashed border-[#d9cebf] bg-[#fffdf8] p-10 text-center">
-              <p className="[font-family:var(--font-display),Georgia,serif] text-3xl">
+            <div className="mt-8 rounded-3xl border border-dashed border-[#C9D0E0] bg-[#FFFFFF] p-10 text-center">
+              <p className="[font-family:var(--font-display),sans-serif] text-3xl">
                 Nothing in that corner.
               </p>
-              <p className="mt-2 text-sm text-[#6f675e]">
+              <p className="mt-2 text-sm text-[#5A6478]">
                 Try another cuisine, or turn off “Open now”.
               </p>
               <button
@@ -126,7 +126,7 @@ export default function Browse() {
                   setQuery("");
                   setOpenOnly(false);
                 }}
-                className="mt-5 text-sm text-[#c4542c] underline"
+                className="mt-5 text-sm text-[#2F5BFF] underline"
               >
                 Clear filters
               </button>
@@ -137,7 +137,7 @@ export default function Browse() {
                 <li key={r.slug}>
                   <Link
                     href={`/prototype/restaurant?slug=${r.slug}${at ? `&at=${encodeURIComponent(at)}` : ""}`}
-                    className="group block overflow-hidden rounded-[28px] border border-[#e4d9c8] bg-[#fffdf8]"
+                    className="group block overflow-hidden rounded-[28px] border border-[#E2E6F0] bg-[#FFFFFF]"
                   >
                     <div className="relative">
                       <img
@@ -145,21 +145,21 @@ export default function Browse() {
                         alt=""
                         className="aspect-[4/3] w-full object-cover"
                       />
-                      <span className="absolute left-3 top-3 rounded-full bg-[#fffdf8]/95 px-2.5 py-1 text-xs">
+                      <span className="absolute left-3 top-3 rounded-full bg-[#FFFFFF]/95 px-2.5 py-1 text-xs">
                         {r.open ? `Ready in ${r.readyMin} min` : "Dinner only"}
                       </span>
                     </div>
                     <div className="p-4">
                       <div className="flex items-baseline justify-between gap-3">
-                        <h2 className="[font-family:var(--font-display),Georgia,serif] text-2xl tracking-tight">
+                        <h2 className="[font-family:var(--font-display),sans-serif] text-2xl tracking-tight">
                           {r.name}
                         </h2>
                         <span className="text-sm">{r.rating}</span>
                       </div>
-                      <p className="mt-1 text-sm text-[#6f675e]">
+                      <p className="mt-1 text-sm text-[#5A6478]">
                         {r.cuisine} · {r.price} · {r.miles} mi · {r.neighborhood}
                       </p>
-                      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[#5c564e]">
+                      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[#3D465C]">
                         {r.blurb}
                       </p>
                       <div className="mt-3 flex flex-wrap gap-1.5">
@@ -168,8 +168,8 @@ export default function Browse() {
                             key={s}
                             className={`rounded-full px-2 py-1 text-xs ${
                               at === s
-                                ? "bg-[#1a1714] text-[#f3eee6]"
-                                : "bg-[#f3eee6] text-[#3c3832]"
+                                ? "bg-[#101828] text-[#F4F6FB]"
+                                : "bg-[#F4F6FB] text-[#2A3142]"
                             }`}
                           >
                             {s}
@@ -184,22 +184,22 @@ export default function Browse() {
           )}
         </div>
         <aside className="hidden lg:block">
-          <div className="sticky top-40 rounded-[28px] border border-[#e4d9c8] bg-[#243126] p-5 text-[#f3eee6]">
-            <p className="text-[11px] uppercase tracking-[0.18em] text-[#d7c4a8]">
+          <div className="sticky top-40 rounded-[28px] border border-[#E2E6F0] bg-[#12182B] p-5 text-[#F4F6FB]">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-[#9DB0FF]">
               This afternoon
             </p>
-            <p className="mt-3 [font-family:var(--font-display),Georgia,serif] text-3xl leading-tight">
+            <p className="mt-3 [font-family:var(--font-display),sans-serif] text-3xl leading-tight">
               Six kitchens inside three miles.
             </p>
-            <ul className="mt-6 space-y-3 text-sm text-[#e7efe4]">
+            <ul className="mt-6 space-y-3 text-sm text-[#D5DCF0]">
               {restaurants.map((r) => (
                 <li key={r.slug} className="flex justify-between gap-3">
                   <span>{r.neighborhood}</span>
-                  <span className="text-[#d7c4a8]">{r.miles} mi</span>
+                  <span className="text-[#9DB0FF]">{r.miles} mi</span>
                 </li>
               ))}
             </ul>
-            <p className="mt-6 text-xs leading-relaxed text-[#c9d4c8]">
+            <p className="mt-6 text-xs leading-relaxed text-[#9AA6C4]">
               Distances are sample figures for the study, measured from a pin
               on South Congress.
             </p>

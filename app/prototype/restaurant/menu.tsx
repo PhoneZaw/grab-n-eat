@@ -84,14 +84,14 @@ export default function MenuExperience() {
         </div>
         <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.18em] text-[#c4542c]">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-[#2F5BFF]">
               {restaurant.cuisine} · {restaurant.neighborhood}
             </p>
-            <h1 className="mt-2 [font-family:var(--font-display),Georgia,serif] text-5xl tracking-tight">
+            <h1 className="mt-2 [font-family:var(--font-display),sans-serif] text-5xl tracking-tight">
               {restaurant.name}
             </h1>
-            <p className="mt-3 max-w-xl text-[#5c564e]">{restaurant.blurb}</p>
-            <p className="mt-2 text-sm text-[#6f675e]">
+            <p className="mt-3 max-w-xl text-[#3D465C]">{restaurant.blurb}</p>
+            <p className="mt-2 text-sm text-[#5A6478]">
               {restaurant.rating} · {restaurant.reviews} notes · {restaurant.miles} mi ·{" "}
               {restaurant.hours}
             </p>
@@ -99,7 +99,7 @@ export default function MenuExperience() {
         </div>
 
         <div className="mt-6">
-          <p className="text-[11px] uppercase tracking-[0.16em] text-[#8a8175]">
+          <p className="text-[11px] uppercase tracking-[0.16em] text-[#7B8499]">
             Pickup window
           </p>
           <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
@@ -110,8 +110,8 @@ export default function MenuExperience() {
                 onClick={() => setSlot(s)}
                 className={`shrink-0 rounded-full px-4 py-2 text-sm ${
                   slot === s
-                    ? "bg-[#1a1714] text-[#f3eee6]"
-                    : "bg-[#fffdf8] ring-1 ring-[#e4d9c8]"
+                    ? "bg-[#101828] text-[#F4F6FB]"
+                    : "bg-[#FFFFFF] ring-1 ring-[#E2E6F0]"
                 }`}
               >
                 {s}
@@ -123,22 +123,22 @@ export default function MenuExperience() {
         <div className="mt-8 space-y-10">
           {restaurant.menu.map((section) => (
             <section key={section.name} id={section.name}>
-              <h2 className="[font-family:var(--font-display),Georgia,serif] text-3xl tracking-tight">
+              <h2 className="[font-family:var(--font-display),sans-serif] text-3xl tracking-tight">
                 {section.name}
               </h2>
-              <ul className="mt-4 divide-y divide-[#e4d9c8] border-y border-[#e4d9c8]">
+              <ul className="mt-4 divide-y divide-[#E2E6F0] border-y border-[#E2E6F0]">
                 {section.items.map((item) => (
                   <li key={item.id} className="flex items-start justify-between gap-4 py-4">
                     <div>
                       <p className="text-base">
                         {item.name}
                         {item.popular ? (
-                          <span className="ml-2 text-[11px] uppercase tracking-[0.14em] text-[#c4542c]">
+                          <span className="ml-2 text-[11px] uppercase tracking-[0.14em] text-[#2F5BFF]">
                             Usual
                           </span>
                         ) : null}
                       </p>
-                      <p className="mt-1 max-w-md text-sm text-[#6f675e]">
+                      <p className="mt-1 max-w-md text-sm text-[#5A6478]">
                         {item.description}
                       </p>
                       <p className="mt-2 text-sm">{money(item.price)}</p>
@@ -146,7 +146,7 @@ export default function MenuExperience() {
                     <button
                       type="button"
                       onClick={() => openItem(item)}
-                      className="mt-1 rounded-full border border-[#1a1714] px-3 py-1.5 text-sm hover:bg-[#1a1714] hover:text-[#f3eee6]"
+                      className="mt-1 rounded-full border border-[#101828] px-3 py-1.5 text-sm hover:bg-[#101828] hover:text-[#F4F6FB]"
                     >
                       Add
                     </button>
@@ -159,12 +159,12 @@ export default function MenuExperience() {
       </div>
 
       <aside className="lg:sticky lg:top-24 lg:self-start">
-        <div className="rounded-[28px] border border-[#e4d9c8] bg-[#fffdf8] p-5">
-          <p className="text-[11px] uppercase tracking-[0.16em] text-[#8a8175]">
+        <div className="rounded-[28px] border border-[#E2E6F0] bg-[#FFFFFF] p-5">
+          <p className="text-[11px] uppercase tracking-[0.16em] text-[#7B8499]">
             Your pickup · {slot}
           </p>
           {lines.length === 0 ? (
-            <p className="mt-4 text-sm leading-relaxed text-[#6f675e]">
+            <p className="mt-4 text-sm leading-relaxed text-[#5A6478]">
               The bag is empty. Add a plate and it will wait here until you
               check out.
             </p>
@@ -176,14 +176,14 @@ export default function MenuExperience() {
                     <div>
                       <p className="text-sm">{l.item.name}</p>
                       {l.extra ? (
-                        <p className="text-xs text-[#8a8175]">{l.extra}</p>
+                        <p className="text-xs text-[#7B8499]">{l.extra}</p>
                       ) : null}
                     </div>
                     <p className="text-sm">
                       {money((l.item.price + l.extraPrice) * l.qty)}
                     </p>
                   </div>
-                  <div className="mt-2 inline-flex items-center gap-3 rounded-full bg-[#f3eee6] px-2 py-1 text-sm">
+                  <div className="mt-2 inline-flex items-center gap-3 rounded-full bg-[#F4F6FB] px-2 py-1 text-sm">
                     <button type="button" onClick={() => changeQty(l.key, -1)} aria-label="Decrease">
                       −
                     </button>
@@ -196,35 +196,35 @@ export default function MenuExperience() {
               ))}
             </ul>
           )}
-          <div className="mt-5 flex items-center justify-between border-t border-[#e4d9c8] pt-4 text-sm">
+          <div className="mt-5 flex items-center justify-between border-t border-[#E2E6F0] pt-4 text-sm">
             <span>Subtotal</span>
             <span>{money(total)}</span>
           </div>
           {lines.length > 0 ? (
             <Link
               href={checkoutHref}
-              className="mt-4 block rounded-full bg-[#c4542c] py-3 text-center text-sm text-white hover:bg-[#9a3d1c]"
+              className="mt-4 block rounded-full bg-[#2F5BFF] py-3 text-center text-sm text-white hover:bg-[#1D3FBF]"
             >
               Checkout · {slot}
             </Link>
           ) : (
-            <p className="mt-4 text-center text-xs text-[#8a8175]">
+            <p className="mt-4 text-center text-xs text-[#7B8499]">
               Choose something to continue.
             </p>
           )}
         </div>
           <Link
             href="/prototype/restaurants"
-            className="mt-4 block text-center text-sm text-[#6f675e] hover:text-[#1a1714]"
+            className="mt-4 block text-center text-sm text-[#5A6478] hover:text-[#101828]"
           >
             ← Other kitchens
           </Link>
         </aside>
         {lines.length > 0 ? (
-          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#e4d9c8] bg-[#fffdf8] p-3 lg:hidden">
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E2E6F0] bg-[#FFFFFF] p-3 lg:hidden">
             <Link
               href={checkoutHref}
-              className="flex items-center justify-between rounded-full bg-[#c4542c] px-5 py-3 text-sm text-white"
+              className="flex items-center justify-between rounded-full bg-[#2F5BFF] px-5 py-3 text-sm text-white"
             >
               <span>
                 {lines.reduce((n, l) => n + l.qty, 0)} in the bag · {slot}
@@ -235,23 +235,23 @@ export default function MenuExperience() {
         ) : null}
 
       {active ? (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#1a1714]/40 p-4 sm:items-center">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#101828]/40 p-4 sm:items-center">
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="item-title"
-            className="w-full max-w-md rounded-[28px] bg-[#fffdf8] p-6"
+            className="w-full max-w-md rounded-[28px] bg-[#FFFFFF] p-6"
           >
-            <p className="text-[11px] uppercase tracking-[0.16em] text-[#8a8175]">
+            <p className="text-[11px] uppercase tracking-[0.16em] text-[#7B8499]">
               {restaurant.name}
             </p>
             <h2
               id="item-title"
-              className="mt-2 [font-family:var(--font-display),Georgia,serif] text-3xl tracking-tight"
+              className="mt-2 [font-family:var(--font-display),sans-serif] text-3xl tracking-tight"
             >
               {active.name}
             </h2>
-            <p className="mt-2 text-sm text-[#5c564e]">{active.description}</p>
+            <p className="mt-2 text-sm text-[#3D465C]">{active.description}</p>
             <fieldset className="mt-5">
               <legend className="text-sm">Add if you like</legend>
               <div className="mt-2 space-y-2">
@@ -271,7 +271,7 @@ export default function MenuExperience() {
                       />
                       {a.label}
                     </span>
-                    <span className="text-[#6f675e]">+{money(a.price)}</span>
+                    <span className="text-[#5A6478]">+{money(a.price)}</span>
                   </label>
                 ))}
               </div>
@@ -282,21 +282,21 @@ export default function MenuExperience() {
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="No onion, extra lemon…"
-                className="mt-1 w-full rounded-2xl border border-[#e4d9c8] bg-transparent px-3 py-2 outline-none focus:border-[#1a1714]"
+                className="mt-1 w-full rounded-2xl border border-[#E2E6F0] bg-transparent px-3 py-2 outline-none focus:border-[#101828]"
               />
             </label>
             <div className="mt-5 flex gap-3">
               <button
                 type="button"
                 onClick={() => setActive(null)}
-                className="flex-1 rounded-full border border-[#e4d9c8] py-3 text-sm"
+                className="flex-1 rounded-full border border-[#E2E6F0] py-3 text-sm"
               >
                 Close
               </button>
               <button
                 type="button"
                 onClick={addActive}
-                className="flex-1 rounded-full bg-[#1a1714] py-3 text-sm text-[#f3eee6]"
+                className="flex-1 rounded-full bg-[#101828] py-3 text-sm text-[#F4F6FB]"
               >
                 Add {money(active.price + addons.filter((a) => addon.includes(a.id)).reduce((s, a) => s + a.price, 0))}
               </button>

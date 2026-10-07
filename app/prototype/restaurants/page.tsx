@@ -8,10 +8,10 @@ export default function RestaurantsPage() {
       <ProtoNav />
       <main>
         <div className="mx-auto max-w-6xl px-5 pb-2 pt-10">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-[#c4542c]">
+          <p className="text-[11px] uppercase tracking-[0.22em] text-[#2F5BFF]">
             Kitchens
           </p>
-          <h1 className="mt-2 [font-family:var(--font-display),Georgia,serif] text-5xl tracking-tight">
+          <h1 className="mt-2 [font-family:var(--font-display),sans-serif] text-5xl tracking-tight">
             Near South Congress
           </h1>
         </div>

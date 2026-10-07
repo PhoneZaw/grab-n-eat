@@ -39,22 +39,22 @@ export default function PrototypeHome() {
       <main>
         <section className="mx-auto grid max-w-6xl items-end gap-10 px-5 pb-8 pt-12 lg:grid-cols-[1.15fr_0.85fr] lg:pt-20">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-[#c4542c]">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-[#2F5BFF]">
               Pickup, on purpose
             </p>
-            <h1 className="mt-4 [font-family:var(--font-display),Georgia,serif] text-[3.4rem] leading-[0.95] tracking-tight sm:text-7xl">
+            <h1 className="mt-4 [font-family:var(--font-display),sans-serif] text-[3.4rem] leading-[0.95] tracking-tight sm:text-7xl">
               Lunch,
               <br />
               ready when
               <br />
-              <span className="italic">you are.</span>
+              <span className="text-[#2F5BFF]">you are.</span>
             </h1>
-            <p className="mt-6 max-w-md text-lg leading-relaxed text-[#5c564e]">
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-[#3D465C]">
               Order from neighborhood kitchens and collect it in a window you
               choose. No delivery fee. No one waiting on your porch.
             </p>
             <SearchForm />
-            <p className="mt-4 text-sm text-[#8a8175]">
+            <p className="mt-4 text-sm text-[#7B8499]">
               Around South Congress · most plates ready in under 20 minutes
             </p>
           </div>
@@ -64,14 +64,14 @@ export default function PrototypeHome() {
               alt="A seasonal bowl from Hearth & Rye"
               className="aspect-[4/5] w-full rounded-[32px] object-cover"
             />
-            <div className="absolute bottom-4 left-4 right-4 rounded-2xl bg-[#fffdf8]/95 p-4 backdrop-blur">
-              <p className="text-[11px] uppercase tracking-[0.16em] text-[#8a8175]">
+            <div className="absolute bottom-4 left-4 right-4 rounded-2xl bg-[#FFFFFF]/95 p-4 backdrop-blur">
+              <p className="text-[11px] uppercase tracking-[0.16em] text-[#7B8499]">
                 Nearby · {featured[0].readyMin} min
               </p>
-              <p className="mt-1 [font-family:var(--font-display),Georgia,serif] text-2xl">
+              <p className="mt-1 [font-family:var(--font-display),sans-serif] text-2xl">
                 {featured[0].name}
               </p>
-              <p className="text-sm text-[#5c564e]">{featured[0].blurb}</p>
+              <p className="text-sm text-[#3D465C]">{featured[0].blurb}</p>
             </div>
           </div>
         </section>
@@ -82,7 +82,7 @@ export default function PrototypeHome() {
               <Link
                 key={c.slug}
                 href={`/prototype/restaurants?cuisine=${encodeURIComponent(c.slug)}`}
-                className="shrink-0 rounded-full border border-[#e4d9c8] bg-[#fffdf8] px-4 py-2 text-sm hover:border-[#1a1714]"
+                className="shrink-0 rounded-full border border-[#E2E6F0] bg-[#FFFFFF] px-4 py-2 text-sm hover:border-[#101828]"
               >
                 {c.name}
               </Link>
@@ -92,12 +92,12 @@ export default function PrototypeHome() {
 
         <section className="mx-auto max-w-6xl px-5 py-10">
           <div className="flex items-end justify-between gap-4">
-            <h2 className="[font-family:var(--font-display),Georgia,serif] text-4xl tracking-tight">
+            <h2 className="[font-family:var(--font-display),sans-serif] text-4xl tracking-tight">
               Open near you
             </h2>
             <Link
               href="/prototype/restaurants"
-              className="text-sm text-[#c4542c] hover:underline"
+              className="text-sm text-[#2F5BFF] hover:underline"
             >
               All kitchens
             </Link>
@@ -117,19 +117,19 @@ export default function PrototypeHome() {
                   />
                 </div>
                 <div className="mt-4 flex items-baseline justify-between gap-3">
-                  <h3 className="[font-family:var(--font-display),Georgia,serif] text-2xl tracking-tight">
+                  <h3 className="[font-family:var(--font-display),sans-serif] text-2xl tracking-tight">
                     {r.name}
                   </h3>
-                  <span className="text-sm text-[#5c564e]">{r.rating}</span>
+                  <span className="text-sm text-[#3D465C]">{r.rating}</span>
                 </div>
-                <p className="mt-1 text-sm text-[#6f675e]">
+                <p className="mt-1 text-sm text-[#5A6478]">
                   {r.cuisine} · {r.neighborhood} · {r.miles} mi
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {r.slots.slice(0, 3).map((s) => (
                     <span
                       key={s}
-                      className="rounded-full border border-[#e4d9c8] px-2.5 py-1 text-xs"
+                      className="rounded-full border border-[#E2E6F0] px-2.5 py-1 text-xs"
                     >
                       {s}
                     </span>
@@ -140,17 +140,17 @@ export default function PrototypeHome() {
           </div>
         </section>
 
-        <section className="border-y border-[#e4d9c8] bg-[#fffdf8]">
+        <section className="border-y border-[#E2E6F0] bg-[#FFFFFF]">
           <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:grid-cols-3">
             {steps.map((s) => (
               <div key={s.n}>
-                <p className="text-[11px] tracking-[0.18em] text-[#c4542c]">
+                <p className="text-[11px] tracking-[0.18em] text-[#2F5BFF]">
                   {s.n}
                 </p>
-                <h3 className="mt-3 [font-family:var(--font-display),Georgia,serif] text-3xl tracking-tight">
+                <h3 className="mt-3 [font-family:var(--font-display),sans-serif] text-3xl tracking-tight">
                   {s.title}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#5c564e]">
+                <p className="mt-3 text-sm leading-relaxed text-[#3D465C]">
                   {s.body}
                 </p>
               </div>
@@ -165,20 +165,20 @@ export default function PrototypeHome() {
             className="aspect-[5/4] w-full rounded-[32px] object-cover"
           />
           <div>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-[#8a8175]">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-[#7B8499]">
               For the counter, too
             </p>
-            <h2 className="mt-3 [font-family:var(--font-display),Georgia,serif] text-4xl leading-tight tracking-tight sm:text-5xl">
+            <h2 className="mt-3 [font-family:var(--font-display),sans-serif] text-4xl leading-tight tracking-tight sm:text-5xl">
               Kitchens see the window before they fire the plate.
             </h2>
-            <p className="mt-4 max-w-md text-[#5c564e] leading-relaxed">
+            <p className="mt-4 max-w-md text-[#3D465C] leading-relaxed">
               Grab-n-Eat is built around pickup slots, not a courier map. This
               study keeps that idea visible: every order is a time, a name,
               and a code.
             </p>
             <Link
               href="/prototype/restaurant?slug=loma-tacos"
-              className="mt-6 inline-block rounded-full bg-[#c4542c] px-5 py-3 text-sm text-white hover:bg-[#9a3d1c]"
+              className="mt-6 inline-block rounded-full bg-[#2F5BFF] px-5 py-3 text-sm text-white hover:bg-[#1D3FBF]"
             >
               See a menu
             </Link>

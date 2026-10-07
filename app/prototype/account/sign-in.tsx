@@ -32,12 +32,12 @@ export default function SignIn() {
           alt="A table set with a shared meal"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1a1714] via-[#1a1714]/20 to-transparent" />
-        <div className="absolute bottom-0 p-10 text-[#f3eee6]">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[#e7c2b2]">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#101828] via-[#101828]/20 to-transparent" />
+        <div className="absolute bottom-0 p-10 text-[#F4F6FB]">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-[#9DB0FF]">
             South Congress · today
           </p>
-          <p className="mt-3 max-w-sm [font-family:var(--font-display),Georgia,serif] text-4xl leading-tight">
+          <p className="mt-3 max-w-sm [font-family:var(--font-display),sans-serif] text-4xl leading-tight">
             The good tables are the ones a short walk away.
           </p>
         </div>
@@ -51,7 +51,7 @@ export default function SignIn() {
                 setMode("in");
                 setError("");
               }}
-              className={mode === "in" ? "border-b border-[#1a1714] pb-1" : "text-[#8a8175]"}
+              className={mode === "in" ? "border-b border-[#101828] pb-1" : "text-[#7B8499]"}
             >
               Sign in
             </button>
@@ -61,15 +61,15 @@ export default function SignIn() {
                 setMode("up");
                 setError("");
               }}
-              className={mode === "up" ? "border-b border-[#1a1714] pb-1" : "text-[#8a8175]"}
+              className={mode === "up" ? "border-b border-[#101828] pb-1" : "text-[#7B8499]"}
             >
               Create account
             </button>
           </div>
-          <h1 className="mt-6 [font-family:var(--font-display),Georgia,serif] text-4xl tracking-tight">
+          <h1 className="mt-6 [font-family:var(--font-display),sans-serif] text-4xl tracking-tight">
             {mode === "in" ? "Welcome back." : "A name for the counter."}
           </h1>
-          <p className="mt-2 text-sm text-[#6f675e]">
+          <p className="mt-2 text-sm text-[#5A6478]">
             This study does not create a real account. Continue to browse the
             mock kitchens.
           </p>
@@ -80,7 +80,7 @@ export default function SignIn() {
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="mt-1 w-full rounded-2xl border border-[#e4d9c8] bg-[#fffdf8] px-3 py-3 outline-none focus:border-[#1a1714]"
+                  className="mt-1 w-full rounded-2xl border border-[#E2E6F0] bg-[#FFFFFF] px-3 py-3 outline-none focus:border-[#101828]"
                 />
               </label>
             ) : null}
@@ -90,7 +90,7 @@ export default function SignIn() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full rounded-2xl border border-[#e4d9c8] bg-[#fffdf8] px-3 py-3 outline-none focus:border-[#1a1714]"
+                className="mt-1 w-full rounded-2xl border border-[#E2E6F0] bg-[#FFFFFF] px-3 py-3 outline-none focus:border-[#101828]"
               />
             </label>
             <label className="block text-sm">
@@ -99,13 +99,13 @@ export default function SignIn() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 w-full rounded-2xl border border-[#e4d9c8] bg-[#fffdf8] px-3 py-3 outline-none focus:border-[#1a1714]"
+                className="mt-1 w-full rounded-2xl border border-[#E2E6F0] bg-[#FFFFFF] px-3 py-3 outline-none focus:border-[#101828]"
               />
             </label>
-            {error ? <p className="text-sm text-[#c4542c]">{error}</p> : null}
+            {error ? <p className="text-sm text-[#2F5BFF]">{error}</p> : null}
             <button
               type="submit"
-              className="w-full rounded-full bg-[#c4542c] py-3 text-sm text-white hover:bg-[#9a3d1c]"
+              className="w-full rounded-full bg-[#2F5BFF] py-3 text-sm text-white hover:bg-[#1D3FBF]"
             >
               {mode === "in" ? "Continue" : "Create and continue"}
             </button>

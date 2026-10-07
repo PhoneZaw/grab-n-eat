@@ -21,21 +21,21 @@ export default function SearchForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="mt-8 flex flex-col gap-3 rounded-[28px] border border-[#e4d9c8] bg-[#fffdf8] p-3 shadow-[0_20px_50px_-30px_rgba(26,23,20,0.45)] sm:flex-row sm:items-center"
+      className="mt-8 flex flex-col gap-3 rounded-[28px] border border-[#E2E6F0] bg-[#FFFFFF] p-3 shadow-[0_20px_50px_-30px_rgba(16,24,40,0.18)] sm:flex-row sm:items-center"
     >
       <label className="flex-1 px-3 py-1">
-        <span className="block text-[10px] uppercase tracking-[0.16em] text-[#8a8175]">
+        <span className="block text-[10px] uppercase tracking-[0.16em] text-[#7B8499]">
           Craving or kitchen
         </span>
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Tacos, rye, South Congress…"
-          className="mt-1 w-full bg-transparent text-base outline-none placeholder:text-[#b3aa9e]"
+          className="mt-1 w-full bg-transparent text-base outline-none placeholder:text-[#A3ABC0]"
         />
       </label>
-      <label className="border-t border-[#e4d9c8] px-3 py-1 sm:border-l sm:border-t-0">
-        <span className="block text-[10px] uppercase tracking-[0.16em] text-[#8a8175]">
+      <label className="border-t border-[#E2E6F0] px-3 py-1 sm:border-l sm:border-t-0">
+        <span className="block text-[10px] uppercase tracking-[0.16em] text-[#7B8499]">
           Pick up
         </span>
         <select
@@ -50,7 +50,7 @@ export default function SearchForm() {
       </label>
       <button
         type="submit"
-        className="rounded-full bg-[#1a1714] px-6 py-3 text-sm text-[#f3eee6] hover:bg-[#c4542c]"
+        className="rounded-full bg-[#2F5BFF] px-6 py-3 text-sm text-white hover:bg-[#1D3FBF]"
       >
         Find kitchens
       </button>

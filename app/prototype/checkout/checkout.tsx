@@ -64,13 +64,13 @@ export default function CheckoutForm() {
       className="mx-auto grid max-w-6xl gap-8 px-5 py-10 lg:grid-cols-[1fr_340px]"
     >
       <div>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[#c4542c]">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-[#2F5BFF]">
           Checkout
         </p>
-        <h1 className="mt-2 [font-family:var(--font-display),Georgia,serif] text-5xl tracking-tight">
+        <h1 className="mt-2 [font-family:var(--font-display),sans-serif] text-5xl tracking-tight">
           Confirm the window.
         </h1>
-        <p className="mt-3 text-[#5c564e]">
+        <p className="mt-3 text-[#3D465C]">
           {restaurant.name} · {restaurant.neighborhood}. You will pick this up
           yourself.
         </p>
@@ -85,8 +85,8 @@ export default function CheckoutForm() {
                 onClick={() => setSlot(s)}
                 className={`rounded-full px-4 py-2 text-sm ${
                   slot === s
-                    ? "bg-[#1a1714] text-[#f3eee6]"
-                    : "bg-[#fffdf8] ring-1 ring-[#e4d9c8]"
+                    ? "bg-[#101828] text-[#F4F6FB]"
+                    : "bg-[#FFFFFF] ring-1 ring-[#E2E6F0]"
                 }`}
               >
                 Today {s}
@@ -101,7 +101,7 @@ export default function CheckoutForm() {
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1 w-full rounded-2xl border border-[#e4d9c8] bg-[#fffdf8] px-3 py-3 outline-none focus:border-[#1a1714]"
+              className="mt-1 w-full rounded-2xl border border-[#E2E6F0] bg-[#FFFFFF] px-3 py-3 outline-none focus:border-[#101828]"
             />
           </label>
           <label className="text-sm">
@@ -109,7 +109,7 @@ export default function CheckoutForm() {
             <input
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="mt-1 w-full rounded-2xl border border-[#e4d9c8] bg-[#fffdf8] px-3 py-3 outline-none focus:border-[#1a1714]"
+              className="mt-1 w-full rounded-2xl border border-[#E2E6F0] bg-[#FFFFFF] px-3 py-3 outline-none focus:border-[#101828]"
             />
           </label>
         </div>
@@ -122,8 +122,8 @@ export default function CheckoutForm() {
                 key={m}
                 className={`flex cursor-pointer items-center justify-between rounded-2xl border px-4 py-3 text-sm ${
                   method === m
-                    ? "border-[#1a1714] bg-[#fffdf8]"
-                    : "border-[#e4d9c8]"
+                    ? "border-[#101828] bg-[#FFFFFF]"
+                    : "border-[#E2E6F0]"
                 }`}
               >
                 <span>{m}</span>
@@ -137,45 +137,45 @@ export default function CheckoutForm() {
             ))}
           </div>
         </fieldset>
-        {error ? <p className="mt-4 text-sm text-[#c4542c]">{error}</p> : null}
+        {error ? <p className="mt-4 text-sm text-[#2F5BFF]">{error}</p> : null}
       </div>
 
-      <aside className="h-fit rounded-[28px] border border-[#e4d9c8] bg-[#fffdf8] p-5">
-        <p className="[font-family:var(--font-display),Georgia,serif] text-2xl">
+      <aside className="h-fit rounded-[28px] border border-[#E2E6F0] bg-[#FFFFFF] p-5">
+        <p className="[font-family:var(--font-display),sans-serif] text-2xl">
           {restaurant.name}
         </p>
-        <p className="mt-1 text-sm text-[#6f675e]">Today · {slot}</p>
+        <p className="mt-1 text-sm text-[#5A6478]">Today · {slot}</p>
         <p className="mt-4 text-sm leading-relaxed">{items}</p>
         <div className="mt-4 flex gap-2">
           <input
             value={code}
             onChange={(e) => setCode(e.target.value)}
             placeholder="Promo code"
-            className="w-full rounded-full border border-[#e4d9c8] px-3 py-2 text-sm outline-none"
+            className="w-full rounded-full border border-[#E2E6F0] px-3 py-2 text-sm outline-none"
           />
           <button
             type="button"
             onClick={applyCode}
-            className="rounded-full border border-[#1a1714] px-3 text-sm"
+            className="rounded-full border border-[#101828] px-3 text-sm"
           >
             Apply
           </button>
         </div>
-        {codeError ? <p className="mt-2 text-xs text-[#c4542c]">{codeError}</p> : null}
+        {codeError ? <p className="mt-2 text-xs text-[#2F5BFF]">{codeError}</p> : null}
         {applied ? (
-          <p className="mt-2 text-xs text-[#3f5344]">FRESH10 applied.</p>
+          <p className="mt-2 text-xs text-[#0B8A5B]">FRESH10 applied.</p>
         ) : null}
-        <dl className="mt-5 space-y-2 border-t border-[#e4d9c8] pt-4 text-sm">
+        <dl className="mt-5 space-y-2 border-t border-[#E2E6F0] pt-4 text-sm">
           <div className="flex justify-between">
             <dt>Food</dt>
             <dd>{money(subtotal)}</dd>
           </div>
-          <div className="flex justify-between text-[#6f675e]">
+          <div className="flex justify-between text-[#5A6478]">
             <dt>Pickup fee</dt>
             <dd>$0.00</dd>
           </div>
           {applied ? (
-            <div className="flex justify-between text-[#3f5344]">
+            <div className="flex justify-between text-[#0B8A5B]">
               <dt>FRESH10</dt>
               <dd>−{money(discount)}</dd>
             </div>
@@ -187,13 +187,13 @@ export default function CheckoutForm() {
         </dl>
         <button
           type="submit"
-          className="mt-5 w-full rounded-full bg-[#c4542c] py-3 text-sm text-white hover:bg-[#9a3d1c]"
+          className="mt-5 w-full rounded-full bg-[#2F5BFF] py-3 text-sm text-white hover:bg-[#1D3FBF]"
         >
           Place pickup order
         </button>
         <Link
           href={`/prototype/restaurant?slug=${restaurant.slug}`}
-          className="mt-3 block text-center text-sm text-[#6f675e]"
+          className="mt-3 block text-center text-sm text-[#5A6478]"
         >
           Back to the menu
         </Link>

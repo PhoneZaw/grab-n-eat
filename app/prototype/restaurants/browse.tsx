@@ -1,0 +1,211 @@
+"use client";
+
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { cuisines, restaurants } from "../data";
+
+const sorts = [
+  { id: "nearest", label: "Nearest" },
+  { id: "rating", label: "Top rated" },
+  { id: "ready", label: "Ready soonest" },
+] as const;
+
+export default function Browse() {
+  const params = useSearchParams();
+  const initialCuisine = params.get("cuisine") ?? "All";
+  const initialQuery = params.get("q") ?? "";
+  const at = params.get("at");
+
+  const [cuisine, setCuisine] = useState(
+    cuisines.includes(initialCuisine) ? initialCuisine : "All"
+  );
+  const [query, setQuery] = useState(initialQuery);
+  const [sort, setSort] = useState<(typeof sorts)[number]["id"]>("nearest");
+  const [openOnly, setOpenOnly] = useState(false);
+
+  const list = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    let rows = restaurants.filter((r) => {
+      const matchesCuisine = cuisine === "All" || r.cuisine === cuisine;
+      const matchesOpen = !openOnly || r.open;
+      const matchesQuery =
+        !q ||
+        r.name.toLowerCase().includes(q) ||
+        r.cuisine.toLowerCase().includes(q) ||
+        r.neighborhood.toLowerCase().includes(q) ||
+        r.blurb.toLowerCase().includes(q);
+      return matchesCuisine && matchesOpen && matchesQuery;
+    });
+    rows = [...rows].sort((a, b) => {
+      if (sort === "rating") return b.rating - a.rating;
+      if (sort === "ready") return a.readyMin - b.readyMin;
+      return a.miles - b.miles;
+    });
+    return rows;
+  }, [cuisine, query, sort, openOnly]);
+
+  return (
+    <div>
+      <div className="sticky top-[6.75rem] z-30 border-b border-[#e4d9c8] bg-[#f3eee6]/95 backdrop-blur md:top-16">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search kitchens, dishes, neighborhoods"
+              className="w-full rounded-full border border-[#e4d9c8] bg-[#fffdf8] px-4 py-2.5 text-sm outline-none focus:border-[#1a1714]"
+            />
+            <div className="flex shrink-0 items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setOpenOnly((v) => !v)}
+                className={`rounded-full border px-3 py-2 text-sm ${
+                  openOnly
+                    ? "border-[#1a1714] bg-[#1a1714] text-[#f3eee6]"
+                    : "border-[#e4d9c8] bg-[#fffdf8]"
+                }`}
+              >
+                Open now
+              </button>
+              <label className="text-sm text-[#5c564e]">
+                <span className="sr-only">Sort</span>
+                <select
+                  value={sort}
+                  onChange={(e) =>
+                    setSort(e.target.value as (typeof sorts)[number]["id"])
+                  }
+                  className="rounded-full border border-[#e4d9c8] bg-[#fffdf8] px-3 py-2 outline-none"
+                >
+                  {sorts.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {cuisines.map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => setCuisine(c)}
+                className={`shrink-0 rounded-full px-3 py-1.5 text-sm ${
+                  cuisine === c
+                    ? "bg-[#c4542c] text-white"
+                    : "bg-[#fffdf8] text-[#3c3832] ring-1 ring-[#e4d9c8]"
+                }`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto grid max-w-6xl gap-8 px-5 py-8 lg:grid-cols-[1fr_280px]">
+        <div>
+          <p className="text-sm text-[#6f675e]">
+            {list.length} kitchen{list.length === 1 ? "" : "s"}
+            {at ? ` · aiming for ${at}` : ""} · South Congress and nearby
+          </p>
+          {list.length === 0 ? (
+            <div className="mt-8 rounded-3xl border border-dashed border-[#d9cebf] bg-[#fffdf8] p-10 text-center">
+              <p className="[font-family:var(--font-display),Georgia,serif] text-3xl">
+                Nothing in that corner.
+              </p>
+              <p className="mt-2 text-sm text-[#6f675e]">
+                Try another cuisine, or turn off “Open now”.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setCuisine("All");
+                  setQuery("");
+                  setOpenOnly(false);
+                }}
+                className="mt-5 text-sm text-[#c4542c] underline"
+              >
+                Clear filters
+              </button>
+            </div>
+          ) : (
+            <ul className="mt-5 grid gap-5 sm:grid-cols-2">
+              {list.map((r) => (
+                <li key={r.slug}>
+                  <Link
+                    href={`/prototype/restaurant?slug=${r.slug}${at ? `&at=${encodeURIComponent(at)}` : ""}`}
+                    className="group block overflow-hidden rounded-[28px] border border-[#e4d9c8] bg-[#fffdf8]"
+                  >
+                    <div className="relative">
+                      <img
+                        src={r.image}
+                        alt=""
+                        className="aspect-[4/3] w-full object-cover"
+                      />
+                      <span className="absolute left-3 top-3 rounded-full bg-[#fffdf8]/95 px-2.5 py-1 text-xs">
+                        {r.open ? `Ready in ${r.readyMin} min` : "Dinner only"}
+                      </span>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <h2 className="[font-family:var(--font-display),Georgia,serif] text-2xl tracking-tight">
+                          {r.name}
+                        </h2>
+                        <span className="text-sm">{r.rating}</span>
+                      </div>
+                      <p className="mt-1 text-sm text-[#6f675e]">
+                        {r.cuisine} · {r.price} · {r.miles} mi · {r.neighborhood}
+                      </p>
+                      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[#5c564e]">
+                        {r.blurb}
+                      </p>
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {r.slots.slice(0, 4).map((s) => (
+                          <span
+                            key={s}
+                            className={`rounded-full px-2 py-1 text-xs ${
+                              at === s
+                                ? "bg-[#1a1714] text-[#f3eee6]"
+                                : "bg-[#f3eee6] text-[#3c3832]"
+                            }`}
+                          >
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <aside className="hidden lg:block">
+          <div className="sticky top-40 rounded-[28px] border border-[#e4d9c8] bg-[#243126] p-5 text-[#f3eee6]">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-[#d7c4a8]">
+              This afternoon
+            </p>
+            <p className="mt-3 [font-family:var(--font-display),Georgia,serif] text-3xl leading-tight">
+              Six kitchens inside three miles.
+            </p>
+            <ul className="mt-6 space-y-3 text-sm text-[#e7efe4]">
+              {restaurants.map((r) => (
+                <li key={r.slug} className="flex justify-between gap-3">
+                  <span>{r.neighborhood}</span>
+                  <span className="text-[#d7c4a8]">{r.miles} mi</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 text-xs leading-relaxed text-[#c9d4c8]">
+              Distances are sample figures for the study, measured from a pin
+              on South Congress.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+}

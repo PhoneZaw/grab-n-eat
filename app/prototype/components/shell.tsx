@@ -26,7 +26,7 @@ export function ProtoNav({
         </Link>
         <nav className="hidden items-center gap-7 text-sm text-[#2A3142] md:flex">
           {links.map((l) => (
-            <Link key={l.href} href={l.href} className="hover:text-[#2F5BFF]">
+            <Link key={l.href} href={l.href} className="hover:text-[#FF5200]">
               {l.label}
             </Link>
           ))}
@@ -40,7 +40,7 @@ export function ProtoNav({
       </div>
       <nav className="flex gap-5 overflow-x-auto px-5 pb-3 text-sm text-[#2A3142] md:hidden">
         {links.map((l) => (
-          <Link key={l.href} href={l.href} className="shrink-0 hover:text-[#2F5BFF]">
+          <Link key={l.href} href={l.href} className="shrink-0 hover:text-[#FF5200]">
             {l.label}
           </Link>
         ))}

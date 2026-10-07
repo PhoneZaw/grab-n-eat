@@ -84,7 +84,7 @@ export default function MenuExperience() {
         </div>
         <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.18em] text-[#2F5BFF]">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-[#FF5200]">
               {restaurant.cuisine} · {restaurant.neighborhood}
             </p>
             <h1 className="mt-2 [font-family:var(--font-display),sans-serif] text-5xl tracking-tight">
@@ -133,7 +133,7 @@ export default function MenuExperience() {
                       <p className="text-base">
                         {item.name}
                         {item.popular ? (
-                          <span className="ml-2 text-[11px] uppercase tracking-[0.14em] text-[#2F5BFF]">
+                          <span className="ml-2 text-[11px] uppercase tracking-[0.14em] text-[#FF5200]">
                             Usual
                           </span>
                         ) : null}
@@ -203,7 +203,7 @@ export default function MenuExperience() {
           {lines.length > 0 ? (
             <Link
               href={checkoutHref}
-              className="mt-4 block rounded-full bg-[#2F5BFF] py-3 text-center text-sm text-white hover:bg-[#1D3FBF]"
+              className="mt-4 block rounded-full bg-[#FF5200] py-3 text-center text-sm text-white hover:bg-[#D84300]"
             >
               Checkout · {slot}
             </Link>
@@ -224,7 +224,7 @@ export default function MenuExperience() {
           <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E2E6F0] bg-[#FFFFFF] p-3 lg:hidden">
             <Link
               href={checkoutHref}
-              className="flex items-center justify-between rounded-full bg-[#2F5BFF] px-5 py-3 text-sm text-white"
+              className="flex items-center justify-between rounded-full bg-[#FF5200] px-5 py-3 text-sm text-white"
             >
               <span>
                 {lines.reduce((n, l) => n + l.qty, 0)} in the bag · {slot}

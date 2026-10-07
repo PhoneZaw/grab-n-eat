@@ -94,7 +94,7 @@ export default function Browse() {
                 onClick={() => setCuisine(c)}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-sm ${
                   cuisine === c
-                    ? "bg-[#2F5BFF] text-white"
+                    ? "bg-[#FF5200] text-white"
                     : "bg-[#FFFFFF] text-[#2A3142] ring-1 ring-[#E2E6F0]"
                 }`}
               >
@@ -126,7 +126,7 @@ export default function Browse() {
                   setQuery("");
                   setOpenOnly(false);
                 }}
-                className="mt-5 text-sm text-[#2F5BFF] underline"
+                className="mt-5 text-sm text-[#FF5200] underline"
               >
                 Clear filters
               </button>

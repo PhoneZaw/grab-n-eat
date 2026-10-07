@@ -50,7 +50,7 @@ export default function SearchForm() {
       </label>
       <button
         type="submit"
-        className="rounded-full bg-[#2F5BFF] px-6 py-3 text-sm text-white hover:bg-[#1D3FBF]"
+        className="rounded-full bg-[#FF5200] px-6 py-3 text-sm text-white hover:bg-[#D84300]"
       >
         Find kitchens
       </button>

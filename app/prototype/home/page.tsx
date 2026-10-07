@@ -39,7 +39,7 @@ export default function PrototypeHome() {
       <main>
         <section className="mx-auto grid max-w-6xl items-end gap-10 px-5 pb-8 pt-12 lg:grid-cols-[1.15fr_0.85fr] lg:pt-20">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-[#2F5BFF]">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-[#FF5200]">
               Pickup, on purpose
             </p>
             <h1 className="mt-4 [font-family:var(--font-display),sans-serif] text-[3.4rem] leading-[0.95] tracking-tight sm:text-7xl">
@@ -47,7 +47,7 @@ export default function PrototypeHome() {
               <br />
               ready when
               <br />
-              <span className="text-[#2F5BFF]">you are.</span>
+              <span className="text-[#FF5200]">you are.</span>
             </h1>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-[#3D465C]">
               Order from neighborhood kitchens and collect it in a window you
@@ -97,7 +97,7 @@ export default function PrototypeHome() {
             </h2>
             <Link
               href="/prototype/restaurants"
-              className="text-sm text-[#2F5BFF] hover:underline"
+              className="text-sm text-[#FF5200] hover:underline"
             >
               All kitchens
             </Link>
@@ -144,7 +144,7 @@ export default function PrototypeHome() {
           <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:grid-cols-3">
             {steps.map((s) => (
               <div key={s.n}>
-                <p className="text-[11px] tracking-[0.18em] text-[#2F5BFF]">
+                <p className="text-[11px] tracking-[0.18em] text-[#FF5200]">
                   {s.n}
                 </p>
                 <h3 className="mt-3 [font-family:var(--font-display),sans-serif] text-3xl tracking-tight">
@@ -178,7 +178,7 @@ export default function PrototypeHome() {
             </p>
             <Link
               href="/prototype/restaurant?slug=loma-tacos"
-              className="mt-6 inline-block rounded-full bg-[#2F5BFF] px-5 py-3 text-sm text-white hover:bg-[#1D3FBF]"
+              className="mt-6 inline-block rounded-full bg-[#FF5200] px-5 py-3 text-sm text-white hover:bg-[#D84300]"
             >
               See a menu
             </Link>

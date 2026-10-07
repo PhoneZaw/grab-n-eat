@@ -7,16 +7,16 @@ export default function PrototypeIndex() {
     <>
       <ProtoNav cta="Open home" ctaHref="/prototype/home" />
       <main className="mx-auto max-w-6xl px-5 pb-20 pt-12">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-[#2F5BFF]">
+        <p className="text-[11px] uppercase tracking-[0.22em] text-[#FF5200]">
           Customer redesign · mock data
         </p>
         <h1 className="mt-4 max-w-3xl [font-family:var(--font-display),sans-serif] text-5xl leading-[1.05] tracking-tight sm:text-6xl">
           Order ahead.
-          <span className="text-[#2F5BFF]"> Walk in warm.</span>
+          <span className="text-[#FF5200]"> Walk in warm.</span>
         </h1>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#3D465C]">
           A new customer face for Grab-n-Eat: cool daylight, a geometric
-          headline, and cobalt for the actions. Pickup windows stay on the
+          headline, and a food-app orange for the actions. Pickup windows stay on the
           surface of every screen.
         </p>
 
@@ -31,7 +31,7 @@ export default function PrototypeIndex() {
                   <p className="text-[11px] tracking-[0.18em] text-[#7B8499]">
                     {screen.kicker}
                   </p>
-                  <h2 className="mt-3 [font-family:var(--font-display),sans-serif] text-3xl tracking-tight group-hover:text-[#2F5BFF]">
+                  <h2 className="mt-3 [font-family:var(--font-display),sans-serif] text-3xl tracking-tight group-hover:text-[#FF5200]">
                     {screen.title}
                   </h2>
                   <p className="mt-3 max-w-md text-sm leading-relaxed text-[#3D465C]">

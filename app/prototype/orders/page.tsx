@@ -49,7 +49,7 @@ export default function OrdersPage() {
     <>
       <ProtoNav cta="Avery" />
       <main className="mx-auto max-w-3xl px-5 py-12">
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[#2F5BFF]">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-[#FF5200]">
           Avery Chen
         </p>
         <h1 className="mt-2 [font-family:var(--font-display),sans-serif] text-5xl tracking-tight">
@@ -71,7 +71,7 @@ export default function OrdersPage() {
                 <p className="text-sm text-[#5A6478]">
                   {o.items} · {o.total}
                 </p>
-                <p className={`mt-1 text-sm ${o.live ? "text-[#2F5BFF]" : "text-[#0B8A5B]"}`}>
+                <p className={`mt-1 text-sm ${o.live ? "text-[#FF5200]" : "text-[#0B8A5B]"}`}>
                   {o.state}
                 </p>
               </div>

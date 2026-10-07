@@ -8,7 +8,7 @@ export default function RestaurantsPage() {
       <ProtoNav />
       <main>
         <div className="mx-auto max-w-6xl px-5 pb-2 pt-10">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-[#2F5BFF]">
+          <p className="text-[11px] uppercase tracking-[0.22em] text-[#FF5200]">
             Kitchens
           </p>
           <h1 className="mt-2 [font-family:var(--font-display),sans-serif] text-5xl tracking-tight">

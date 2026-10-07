@@ -20,7 +20,7 @@ export default function TrackingPage({
       <ProtoNav cta="Avery" />
       <main className="mx-auto grid max-w-6xl gap-10 px-5 py-12 lg:grid-cols-[1.1fr_0.9fr]">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[#2F5BFF]">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-[#FF5200]">
             Order 4821 · today {slot}
           </p>
           <h1 className="mt-3 [font-family:var(--font-display),sans-serif] text-5xl leading-tight tracking-tight sm:text-6xl">
@@ -47,7 +47,7 @@ export default function TrackingPage({
                 </p>
                 <p
                   className={`mt-1 text-sm ${
-                    i === 1 ? "text-[#2F5BFF]" : "text-[#101828]"
+                    i === 1 ? "text-[#FF5200]" : "text-[#101828]"
                   }`}
                 >
                   {step}

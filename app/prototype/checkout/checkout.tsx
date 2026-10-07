@@ -64,7 +64,7 @@ export default function CheckoutForm() {
       className="mx-auto grid max-w-6xl gap-8 px-5 py-10 lg:grid-cols-[1fr_340px]"
     >
       <div>
-        <p className="text-[11px] uppercase tracking-[0.2em] text-[#2F5BFF]">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-[#FF5200]">
           Checkout
         </p>
         <h1 className="mt-2 [font-family:var(--font-display),sans-serif] text-5xl tracking-tight">
@@ -137,7 +137,7 @@ export default function CheckoutForm() {
             ))}
           </div>
         </fieldset>
-        {error ? <p className="mt-4 text-sm text-[#2F5BFF]">{error}</p> : null}
+        {error ? <p className="mt-4 text-sm text-[#FF5200]">{error}</p> : null}
       </div>
 
       <aside className="h-fit rounded-[28px] border border-[#E2E6F0] bg-[#FFFFFF] p-5">
@@ -161,7 +161,7 @@ export default function CheckoutForm() {
             Apply
           </button>
         </div>
-        {codeError ? <p className="mt-2 text-xs text-[#2F5BFF]">{codeError}</p> : null}
+        {codeError ? <p className="mt-2 text-xs text-[#FF5200]">{codeError}</p> : null}
         {applied ? (
           <p className="mt-2 text-xs text-[#0B8A5B]">FRESH10 applied.</p>
         ) : null}
@@ -187,7 +187,7 @@ export default function CheckoutForm() {
         </dl>
         <button
           type="submit"
-          className="mt-5 w-full rounded-full bg-[#2F5BFF] py-3 text-sm text-white hover:bg-[#1D3FBF]"
+          className="mt-5 w-full rounded-full bg-[#FF5200] py-3 text-sm text-white hover:bg-[#D84300]"
         >
           Place pickup order
         </button>

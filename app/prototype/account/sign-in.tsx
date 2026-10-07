@@ -102,10 +102,10 @@ export default function SignIn() {
                 className="mt-1 w-full rounded-2xl border border-[#E2E6F0] bg-[#FFFFFF] px-3 py-3 outline-none focus:border-[#101828]"
               />
             </label>
-            {error ? <p className="text-sm text-[#2F5BFF]">{error}</p> : null}
+            {error ? <p className="text-sm text-[#FF5200]">{error}</p> : null}
             <button
               type="submit"
-              className="w-full rounded-full bg-[#2F5BFF] py-3 text-sm text-white hover:bg-[#1D3FBF]"
+              className="w-full rounded-full bg-[#FF5200] py-3 text-sm text-white hover:bg-[#D84300]"
             >
               {mode === "in" ? "Continue" : "Create and continue"}
             </button>
